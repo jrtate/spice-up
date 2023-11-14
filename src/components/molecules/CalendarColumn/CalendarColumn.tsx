@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { format } from "date-fns";
 import CalendarHeader from "../../atoms/CalendarHeader/CalendarHeader";
@@ -14,11 +14,17 @@ interface CalendarColumnProps {
 }
 
 const CalendarColumn = ({ header, taskList }: CalendarColumnProps) => {
+  const [tasks, setTasks] = useState<Task[]>([]);
   const queryClient = useQueryClient();
   const updateTaskOrder = useUpdateTaskSortOrderMutation(queryClient);
 
-  const saveSortOrder = (updatedTaskList) => {
-    const mappedOrder = updatedTaskList?.map((task, index) => {
+  useEffect(() => {
+    setTasks(taskList);
+  }, [taskList]);
+
+  const saveSortOrder = (updatedTaskList: Task[]) => {
+    setTasks(updatedTaskList);
+    const mappedOrder = updatedTaskList?.map((task: Task, index: number) => {
       return {
         taskId: task.id,
         order: index + 1,
@@ -47,10 +53,10 @@ const CalendarColumn = ({ header, taskList }: CalendarColumnProps) => {
       </Box>
       <ReactSortable
         animation={150}
-        list={taskList || []}
+        list={tasks || []}
         setList={(updatedTaskList) => saveSortOrder(updatedTaskList)}
       >
-        {taskList?.map((task) => <TaskCard key={task.id} task={task} />)}
+        {tasks?.map((task) => <TaskCard key={task.id} task={task} />)}
       </ReactSortable>
     </Box>
   );
