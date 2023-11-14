@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import { format } from "date-fns";
 import CalendarHeader from "../../atoms/CalendarHeader/CalendarHeader";
 import TaskCard from "../TaskCard/TaskCard";
 import { ReactSortable } from "react-sortablejs";
-import { Task } from "../../../models/task";
-import { useUpdateTaskSortOrderMutation } from "../../../api/TasksApi";
+import { DaysOfWeek, Task } from "../../../models/task";
 import { useQueryClient } from "@tanstack/react-query";
+import { useUpdateTaskSortOrderMutation } from "../../../api/OrderApi";
 
 interface CalendarColumnProps {
   header: string;
@@ -15,27 +15,19 @@ interface CalendarColumnProps {
 
 const CalendarColumn = ({ header, taskList }: CalendarColumnProps) => {
   const queryClient = useQueryClient();
-  const [tasks, setTasks] = useState<Task[]>(taskList);
   const updateTaskOrder = useUpdateTaskSortOrderMutation(queryClient);
 
-  const saveSortOrder = () => {
-    const mappedOrder = tasks?.map((task, index) => {
+  const saveSortOrder = (updatedTaskList) => {
+    const mappedOrder = updatedTaskList?.map((task, index) => {
       return {
         taskId: task.id,
         order: index + 1,
+        dayOfWeek: DaysOfWeek[header],
       };
     });
 
     updateTaskOrder.mutate(mappedOrder);
   };
-
-  useEffect(() => {
-    saveSortOrder();
-  }, [tasks]);
-
-  useEffect(() => {
-    setTasks(taskList);
-  }, [taskList]);
 
   return (
     <Box width="100%">
@@ -55,13 +47,10 @@ const CalendarColumn = ({ header, taskList }: CalendarColumnProps) => {
       </Box>
       <ReactSortable
         animation={150}
-        list={tasks || []}
-        setList={(updatedTaskList, i) => {
-          console.log("wut this", i);
-          setTasks(updatedTaskList);
-        }}
+        list={taskList || []}
+        setList={(updatedTaskList) => saveSortOrder(updatedTaskList)}
       >
-        {tasks?.map((task) => <TaskCard key={task.id} task={task} />)}
+        {taskList?.map((task) => <TaskCard key={task.id} task={task} />)}
       </ReactSortable>
     </Box>
   );

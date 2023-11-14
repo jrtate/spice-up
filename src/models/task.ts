@@ -7,6 +7,7 @@ export interface Task {
   daysOfWeek: DaysOfWeek[];
   frequency?: number;
   isCompleted?: boolean;
+  order?: number;
 }
 
 export enum DaysOfWeek {
@@ -28,4 +29,5 @@ export interface TaskOrder {
   id?: number;
   taskId: number;
   order: number;
+  dayOfWeek: number;
 }
