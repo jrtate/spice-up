@@ -6,31 +6,69 @@ import PlanLoader from "../../components/organisms/Calendar/PlanLoader/PlanLoade
 import { Box, Typography } from "@mui/material";
 import { ReactSortable } from "react-sortablejs";
 import CurrentCard from "../../components/molecules/CurrentCard/CurrentCard";
+import {
+  useGetTaskOrdersQuery,
+  useUpdateTaskSortOrderMutation,
+} from "../../api/OrderApi";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Act = () => {
   const [currentTaskList, setCurrentTaskList] = useState<Task[]>([]);
-  const { isLoading, data } = useGetTasksQuery();
+  const { isLoading, data: taskData } = useGetTasksQuery();
+  const { data: taskOrderData } = useGetTaskOrdersQuery();
+  const queryClient = useQueryClient();
+  const updateTaskOrder = useUpdateTaskSortOrderMutation(queryClient);
   const currentDay = format(new Date(), "eeee");
-  const currentTasks = useMemo(() => {
-    return data?.filter((task) => {
-      let matchingTask: Task;
-      task?.daysOfWeek?.forEach((day: string | number) => {
-        const dayOfWeek = DaysOfWeek[day];
 
-        if (dayOfWeek === currentDay) {
-          matchingTask = task;
-        }
-      });
-
-      if (matchingTask) {
-        return matchingTask;
-      }
+  const getSortOrder = (task: Task) => {
+    const orderData = taskOrderData?.find?.((order) => {
+      return (
+        order.dayOfWeek === DaysOfWeek[currentDay] && order.taskId === task.id
+      );
     });
-  }, [data, currentDay]);
+    return orderData?.order;
+  };
+
+  const currentTaskData = useMemo(() => {
+    return taskData
+      ?.filter((task) => {
+        let matchingTask: Task;
+        task?.daysOfWeek?.forEach((day: string | number) => {
+          const dayOfWeek = DaysOfWeek[day];
+
+          if (dayOfWeek === currentDay) {
+            matchingTask = task;
+          }
+        });
+
+        if (matchingTask) {
+          return matchingTask;
+        }
+      })
+      ?.sort((taskA, taskB) => {
+        const taskASortOrder = getSortOrder(taskA);
+        const taskBSortOrder = getSortOrder(taskB);
+
+        return taskASortOrder - taskBSortOrder;
+      });
+  }, [taskData, currentDay, taskOrderData]);
 
   useEffect(() => {
-    setCurrentTaskList(currentTasks);
-  }, [currentTasks]);
+    setCurrentTaskList(currentTaskData);
+  }, [currentTaskData]);
+
+  const saveSortOrder = (updatedTaskList: Task[]) => {
+    setCurrentTaskList(updatedTaskList);
+    const mappedOrder = updatedTaskList?.map((task: Task, index: number) => {
+      return {
+        taskId: task.id,
+        order: index + 1,
+        dayOfWeek: DaysOfWeek[currentDay],
+      };
+    });
+
+    updateTaskOrder.mutate(mappedOrder);
+  };
 
   return (
     <Box p={1} sx={{ width: "100%", height: "100%" }}>
@@ -51,7 +89,7 @@ const Act = () => {
             <ReactSortable
               animation={150}
               list={currentTaskList || []}
-              setList={(updatedTaskList) => setCurrentTaskList(updatedTaskList)}
+              setList={(updatedTaskList) => saveSortOrder(updatedTaskList)}
             >
               {currentTaskList?.map((task) => (
                 <CurrentCard key={task.id} task={task} />

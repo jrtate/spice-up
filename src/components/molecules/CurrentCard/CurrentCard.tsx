@@ -12,14 +12,14 @@ import CheckIcon from "@mui/icons-material/Check";
 import { StyledCard } from "./styles";
 import { DaysOfWeek, Task } from "../../../models/task";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  useCompleteTaskMutation,
-  useDeleteTaskMutation,
-  useUnCompleteTaskMutation,
-} from "../../../api/TasksApi";
+import { useDeleteTaskMutation } from "../../../api/TasksApi";
 import { useToast } from "../../../hooks/Toast";
 import EditTaskModal from "../../organisms/Calendar/EditTaskModal/EditTaskModal";
 import { format, formatDuration, intervalToDuration } from "date-fns";
+import {
+  useCompleteTaskMutation,
+  useUnCompleteTaskMutation,
+} from "../../../api/TaskCompletionApi";
 
 interface CurrentCardProps {
   task: Task;
