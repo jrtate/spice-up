@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
-import { LoadingButton } from "@mui/lab";
+import { Link, useNavigate } from "react-router-dom";
 import { SignUpContainer } from "./styles";
+import { useSignUpMutation } from "api/AuthApi";
+import { useToast } from "../../hooks/Toast";
 
 const SignUp = () => {
+  const navigate = useNavigate();
+  const { handleSetShowToast } = useToast();
+  const signUp = useSignUpMutation(navigate, handleSetShowToast);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -38,13 +42,12 @@ const SignUp = () => {
         <Link to="/login">
           <Button onClick={() => {}}>Back</Button>
         </Link>
-        <LoadingButton
-          loading={false}
-          onClick={() => {}}
+        <Button
+          onClick={() => signUp.mutate({ email, password })}
           disabled={!email || !password}
         >
           Sign Up
-        </LoadingButton>
+        </Button>
       </Box>
     </SignUpContainer>
   );

@@ -4,12 +4,14 @@ import { LoadingButton } from "@mui/lab";
 import { LoginContainer } from "./styles";
 import { Link, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../../api/AuthApi";
+import { useToast } from "../../hooks/Toast";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { handleSetShowToast } = useToast();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const login = useLoginMutation(navigate);
+  const login = useLoginMutation(navigate, handleSetShowToast);
 
   return (
     <LoginContainer padding={3}>

@@ -5,7 +5,7 @@ import { add } from "date-fns";
 
 const BASE_URL = "/auth";
 
-export const useSignUpMutation = (navigate) =>
+export const useSignUpMutation = (navigate, handleSetShowToast) =>
   useMutation({
     mutationFn: (authCreds: AuthCreds) =>
       axios.post(
@@ -13,12 +13,15 @@ export const useSignUpMutation = (navigate) =>
         authCreds,
       ),
     onSuccess: () => {
-      // todo
+      handleSetShowToast("Success!");
       navigate("/login");
+    },
+    onError: (error) => {
+      handleSetShowToast(error.message);
     },
   });
 
-export const useLoginMutation = (navigate) =>
+export const useLoginMutation = (navigate, handleSetShowToast) =>
   useMutation({
     mutationFn: (authCreds: AuthCreds) =>
       axios.post(
@@ -32,5 +35,8 @@ export const useLoginMutation = (navigate) =>
       sessionStorage.setItem("token", token);
       axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
       navigate("/plan");
+    },
+    onError: (error) => {
+      handleSetShowToast(error.message);
     },
   });
