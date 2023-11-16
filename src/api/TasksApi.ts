@@ -1,20 +1,24 @@
 import axios from "axios";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
-import { CompletedTask, Task, TaskOrder } from "../models/task";
-import * as querystring from "querystring";
+import { Task } from "../models/task";
+
+const BASE_URL = "/tasks";
 
 export const useGetTasksQuery = () =>
   useQuery<Task[], null>({
     queryKey: ["tasks"],
     queryFn: async () => {
-      const response = await axios.get("http://localhost:5000/tasks");
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}${BASE_URL}`,
+      );
       return response.data;
     },
   });
 
 export const useAddTaskMutation = (queryClient: QueryClient) =>
   useMutation({
-    mutationFn: (task: Task) => axios.post(`http://localhost:5000/tasks`, task),
+    mutationFn: (task: Task) =>
+      axios.post(`${process.env.REACT_APP_BASE_URL}${BASE_URL}`, task),
     onSuccess: () => {
       // Invalidate and re-fetch
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
@@ -24,7 +28,10 @@ export const useAddTaskMutation = (queryClient: QueryClient) =>
 export const useEditTaskMutation = (queryClient: QueryClient) =>
   useMutation({
     mutationFn: (task: Task) =>
-      axios.put(`http://localhost:5000/tasks/${task.id}`, task),
+      axios.put(
+        `${process.env.REACT_APP_BASE_URL}${BASE_URL}/${task.id}`,
+        task,
+      ),
     onSuccess: () => {
       // Invalidate and re-fetch
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
@@ -34,7 +41,7 @@ export const useEditTaskMutation = (queryClient: QueryClient) =>
 export const useDeleteTaskMutation = (queryClient: QueryClient) =>
   useMutation({
     mutationFn: (id: number) =>
-      axios.delete(`http://localhost:5000/tasks/${id}`),
+      axios.delete(`${process.env.REACT_APP_BASE_URL}${BASE_URL}/${id}`),
     onSuccess: () => {
       // Invalidate and re-fetch
       queryClient.invalidateQueries({ queryKey: ["tasks"] });

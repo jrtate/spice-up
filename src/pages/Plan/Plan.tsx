@@ -1,27 +1,27 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { CalendarContainer } from "./styles";
 import CalendarColumn from "components/molecules/CalendarColumn/CalendarColumn";
 import FloatingAddButton from "components/atoms/FloatingAddButton/FloatingAddButton";
-import { DaysOfWeek, Task } from "../../../models/task";
+import { DaysOfWeek, Task } from "models/task";
 import AddTaskModal from "./AddTaskModal/AddTaskModal";
-import { useGetTasksQuery } from "../../../api/TasksApi";
+import { useGetTasksQuery } from "api/TasksApi";
 import PlanLoader from "./PlanLoader/PlanLoader";
-import { useGetTaskOrdersQuery } from "../../../api/OrderApi";
+import { useGetTaskOrdersQuery } from "api/OrderApi";
 
 const Plan = () => {
   const [showAddTaskModal, setShowAddTaskModal] = useState<boolean>(false);
   const { isLoading, data: taskData } = useGetTasksQuery();
   const { data: taskOrderData } = useGetTaskOrdersQuery();
 
-  const getSortOrder = (task: Task, dayOfWeek: DaysOfWeek) => {
-    const orderData = taskOrderData?.find?.((order) => {
-      return order.dayOfWeek === dayOfWeek && order.taskId === task.id;
-    });
-    return orderData?.order;
-  };
-
   const getTasksForColumn = useCallback(
     (key: DaysOfWeek) => {
+      const getSortOrder = (task: Task, dayOfWeek: DaysOfWeek) => {
+        const orderData = taskOrderData?.find?.((order) => {
+          return order.dayOfWeek === dayOfWeek && order.taskId === task.id;
+        });
+        return orderData?.order;
+      };
+
       return taskData
         ?.filter?.((task) => task.daysOfWeek.some((day) => day === key))
         .sort((taskA, taskB) => {

@@ -2,10 +2,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { useGetTasksQuery } from "../../api/TasksApi";
 import { DaysOfWeek, Task } from "../../models/task";
-import PlanLoader from "../../components/organisms/Calendar/PlanLoader/PlanLoader";
+import PlanLoader from "pages/Plan/PlanLoader/PlanLoader";
 import { Box, Typography } from "@mui/material";
 import { ReactSortable } from "react-sortablejs";
-import CurrentCard from "../../components/molecules/CurrentCard/CurrentCard";
+import CurrentCard from "components/molecules/CurrentCard/CurrentCard";
 import {
   useGetTaskOrdersQuery,
   useUpdateTaskSortOrderMutation,
