@@ -2,11 +2,13 @@ import { QueryClient, useMutation } from "@tanstack/react-query";
 import { CompletedTask } from "../models/task";
 import axios from "axios";
 
+const BASE_URL = "/task-completion";
+
 export const useCompleteTaskMutation = (queryClient: QueryClient) =>
   useMutation({
     mutationFn: (completedTask: CompletedTask) =>
       axios.post(
-        `http://localhost:5000/task-completion/complete/${completedTask.id}`,
+        `${process.env.REACT_APP_BASE_URL}${BASE_URL}/complete/${completedTask.id}`,
         completedTask,
       ),
     onSuccess: () => {
@@ -18,7 +20,9 @@ export const useCompleteTaskMutation = (queryClient: QueryClient) =>
 export const useUnCompleteTaskMutation = (queryClient: QueryClient) =>
   useMutation({
     mutationFn: (id: number) =>
-      axios.delete(`http://localhost:5000/task-completion/uncomplete/${id}`),
+      axios.delete(
+        `${process.env.REACT_APP_BASE_URL}${BASE_URL}/uncomplete/${id}`,
+      ),
     onSuccess: () => {
       // Invalidate and re-fetch
       queryClient.invalidateQueries({ queryKey: ["tasks"] });

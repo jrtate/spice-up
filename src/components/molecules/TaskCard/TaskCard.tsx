@@ -10,8 +10,8 @@ import { StyledCard } from "./styles";
 import { Task } from "../../../models/task";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteTaskMutation } from "../../../api/TasksApi";
-import { useToast } from "../../../hooks/Toast";
-import EditTaskModal from "../../organisms/Calendar/EditTaskModal/EditTaskModal";
+import { useToast } from "hooks/Toast";
+import EditTaskModal from "pages/Plan/EditTaskModal/EditTaskModal";
 import { formatDuration, intervalToDuration } from "date-fns";
 
 interface TaskDisplayCardProps {

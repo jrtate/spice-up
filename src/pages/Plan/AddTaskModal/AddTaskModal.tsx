@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { DaysOfWeek } from "../../../../models/task";
-import { useAddTaskMutation } from "../../../../api/TasksApi";
-import { useToast } from "../../../../hooks/Toast";
+import { DaysOfWeek } from "models/task";
+import { useAddTaskMutation } from "api/TasksApi";
+import { useToast } from "hooks/Toast";
 import { useQueryClient } from "@tanstack/react-query";
 import TaskModalFrame from "../TaskModalFrame/TaskModalFrame";
 
