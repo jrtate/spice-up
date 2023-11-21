@@ -103,7 +103,9 @@ const Act = () => {
                   }}
                 >
                   <CurrentCard task={task} />
-                  <PomodoroTracker duration={task.duration} />
+                  {!!task.duration && (
+                    <PomodoroTracker durationInMinutes={task.duration} />
+                  )}
                 </Box>
               ))}
             </ReactSortable>

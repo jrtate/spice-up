@@ -4,23 +4,29 @@ import NotStartedIcon from "@mui/icons-material/NotStarted";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 interface PomodoroCellProps {
-  duration: number;
+  durationInMinutes: number; // in minutes
+  blockType: "Break" | "Task";
 }
 
-const PomodoroCell = ({ duration }: PomodoroCellProps) => {
+const PomodoroCell = ({ durationInMinutes, blockType }: PomodoroCellProps) => {
   const [progress, setProgress] = useState(0);
   const [startTime, setStartTime] = useState<number>(0);
   const [countdown, setCountdown] = useState<string>(
-    `${duration < 10 ? "0" + duration : duration}:00`,
+    `${
+      durationInMinutes < 10 ? "0" + durationInMinutes : durationInMinutes
+    }:00`,
   );
   const timerRef = useRef();
-  const durationToMs = useMemo(() => duration * 1000 * 60, [duration]);
-  const [block, setBlock] = useState<"break" | "task">("break");
+  const durationToMs = useMemo(
+    () => durationInMinutes * 1000 * 60,
+    [durationInMinutes],
+  );
 
   const countdownTimer = () => {
     // get the number of seconds that have elapsed since
     // startTimer() was called
-    const diff = duration * 60 - (((Date.now() - startTime) / 1000) | 0);
+    const diff =
+      durationInMinutes * 60 - (((Date.now() - startTime) / 1000) | 0);
 
     // does the same job as parseInt truncates the float
     let minutes: string | number = (diff / 60) | 0;
@@ -54,16 +60,18 @@ const PomodoroCell = ({ duration }: PomodoroCellProps) => {
   };
 
   useEffect(() => {
+    return () => {
+      clearInterval(timerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
     if (startTime === 0 || progress >= 100) {
       clearInterval(timerRef.current);
       return;
     }
 
     startTimer();
-
-    return () => {
-      clearInterval(timerRef.current);
-    };
   }, [startTime, progress, timerRef.current]);
 
   return (
@@ -76,12 +84,21 @@ const PomodoroCell = ({ duration }: PomodoroCellProps) => {
       >
         {progress < 100 ? <NotStartedIcon /> : <CheckCircleIcon />}
       </IconButton>
-      <LinearProgress
-        sx={{ minWidth: 150 }}
-        variant="determinate"
-        value={progress}
-      />
-      {`${countdown} left until your ${block}`}
+      <Box
+        mt={3}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <LinearProgress
+          sx={{ minWidth: 150 }}
+          variant="determinate"
+          value={progress}
+        />
+        {`${blockType} Cycle - ${countdown}`}
+      </Box>
     </Box>
   );
 };
