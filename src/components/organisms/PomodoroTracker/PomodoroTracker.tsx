@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { Box, IconButton, LinearProgress } from "@mui/material";
 import NotStartedIcon from "@mui/icons-material/NotStarted";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -10,8 +10,10 @@ interface PomodoroTrackerProps {
 const PomodoroTracker = ({ duration }: PomodoroTrackerProps) => {
   const [progress, setProgress] = useState(0);
   const [startTime, setStartTime] = useState<number>(0);
-  const [countdown, setCountdown] = useState<string>(`${duration}:00`);
-  let timer: string | number | NodeJS.Timeout;
+  const [countdown, setCountdown] = useState<string>(
+    `${duration < 10 ? "0" + duration : duration}:00`,
+  );
+  const timerRef = useRef();
   const durationToMs = useMemo(() => duration * 1000 * 60, [duration]);
 
   const countdownTimer = () => {
@@ -35,33 +37,35 @@ const PomodoroTracker = ({ duration }: PomodoroTrackerProps) => {
     }
   };
 
-  // 1891111 - 1766454 / 150000
-
   const startTimer = () => {
     countdownTimer();
-    timer = setInterval(() => {
-      countdownTimer();
-      setProgress(() => {
-        const diff = (Date.now() - startTime) / durationToMs;
-        return Math.min(diff * 100, 100);
-      });
-    }, 1000);
+    if (!timerRef.current) {
+      // @ts-ignore
+      timerRef.current = setInterval(() => {
+        if (!startTime) return;
+        countdownTimer();
+        setProgress(() => {
+          const diff = (Date.now() - startTime) / durationToMs;
+          return Math.min(diff * 100, 100);
+        });
+      }, 1000);
+    }
   };
 
   useEffect(() => {
     return () => {
-      clearInterval(timer);
+      clearInterval(timerRef.current);
     };
   }, []);
 
   useEffect(() => {
     if (startTime === 0 || progress >= 100) {
-      clearInterval(timer);
+      clearInterval(timerRef.current);
       return;
     }
 
     startTimer();
-  }, [startTime, progress]);
+  }, [startTime, progress, timerRef.current]);
 
   return (
     <Box sx={{ display: "flex", width: "100%", alignItems: "center" }}>
@@ -79,9 +83,9 @@ const PomodoroTracker = ({ duration }: PomodoroTrackerProps) => {
         value={progress}
       />
       {countdown}
-      <IconButton color="primary" onClick={() => clearInterval(timer)}>
+      {/*<IconButton color="primary" onClick={() => {}}>
         <NotStartedIcon />
-      </IconButton>
+      </IconButton>*/}
     </Box>
   );
 };
