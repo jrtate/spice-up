@@ -4,11 +4,17 @@ import NotStartedIcon from "@mui/icons-material/NotStarted";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 interface PomodoroCellProps {
-  durationInMinutes: number; // in minutes
+  durationInMinutes: number;
   blockType: "Break" | "Task";
+  setIsCompleted: (b: boolean) => void;
 }
 
-const PomodoroCell = ({ durationInMinutes, blockType }: PomodoroCellProps) => {
+const PomodoroCell = ({
+  durationInMinutes,
+  blockType,
+  setIsCompleted,
+}: PomodoroCellProps) => {
+  const timerRef = useRef();
   const [progress, setProgress] = useState(0);
   const [startTime, setStartTime] = useState<number>(0);
   const [countdown, setCountdown] = useState<string>(
@@ -16,19 +22,21 @@ const PomodoroCell = ({ durationInMinutes, blockType }: PomodoroCellProps) => {
       durationInMinutes < 10 ? "0" + durationInMinutes : durationInMinutes
     }:00`,
   );
-  const timerRef = useRef();
   const durationToMs = useMemo(
     () => durationInMinutes * 1000 * 60,
     [durationInMinutes],
   );
+  const isCompleted = useMemo(() => {
+    const completed = progress >= 100;
+    setIsCompleted(completed);
+    return completed;
+  }, [progress]);
 
   const countdownTimer = () => {
-    // get the number of seconds that have elapsed since
-    // startTimer() was called
+    // get the number of seconds that have elapsed since called
     const diff =
       durationInMinutes * 60 - (((Date.now() - startTime) / 1000) | 0);
 
-    // does the same job as parseInt truncates the float
     let minutes: string | number = (diff / 60) | 0;
     let seconds: string | number = diff % 60 | 0;
 
@@ -82,7 +90,7 @@ const PomodoroCell = ({ durationInMinutes, blockType }: PomodoroCellProps) => {
           setStartTime(Date.now());
         }}
       >
-        {progress < 100 ? <NotStartedIcon /> : <CheckCircleIcon />}
+        {isCompleted ? <CheckCircleIcon /> : <NotStartedIcon />}
       </IconButton>
       <Box
         mt={3}

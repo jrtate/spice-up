@@ -1,5 +1,5 @@
-import React from "react";
-import PomodoroCell from "components/molecules/PomodoroCell/PomodoroCell";
+import React, { useMemo, useState } from "react";
+import PomodoroBlock from "../../molecules/PomodoroBlock/PomodoroBlock";
 
 interface PomodoroTrackerProps {
   durationInMinutes: number;
@@ -9,39 +9,43 @@ const PomodoroTracker = ({ durationInMinutes }: PomodoroTrackerProps) => {
   // todo: make these savable settings
   const pomodoroWorkBlockInMinutes = 15;
   const pomodoroBreakBlockInMinutes = 10;
+
+  const [completedBlocks, setCompletedBlocks] = useState<number[]>([]);
   const remainderWorkBlock = durationInMinutes % pomodoroWorkBlockInMinutes;
+  const fullDurationBlocks = useMemo(() => {
+    return Array.from(
+      Array(Math.floor(durationInMinutes / pomodoroWorkBlockInMinutes)).keys(),
+    ).map((x) => x + 1);
+  }, [durationInMinutes, pomodoroWorkBlockInMinutes]);
+
+  const handleBlockCompletion = (blockId: number) => {
+    setCompletedBlocks((prevState) => [...prevState, blockId]);
+  };
+
+  const shouldBlockRender = (blockId: number) =>
+    blockId === 1 || completedBlocks.includes(blockId - 1);
+
   return (
     <>
-      {Array.from(
-        Array(
-          Math.floor(durationInMinutes / pomodoroWorkBlockInMinutes),
-        ).keys(),
-      )?.map(() => {
+      {fullDurationBlocks?.map((blockId) => {
         return (
-          <>
-            <PomodoroCell
-              durationInMinutes={pomodoroWorkBlockInMinutes}
-              blockType={"Task"}
+          shouldBlockRender(blockId) && (
+            <PomodoroBlock
+              key={blockId}
+              taskDurationInMinutes={pomodoroWorkBlockInMinutes}
+              breakDurationInMinutes={pomodoroBreakBlockInMinutes}
+              setIsBlockCompleted={() => handleBlockCompletion(blockId)}
             />
-            <PomodoroCell
-              durationInMinutes={pomodoroBreakBlockInMinutes}
-              blockType={"Break"}
-            />
-          </>
+          )
         );
       })}
-      {remainderWorkBlock > 0 && (
-        <>
-          <PomodoroCell
-            durationInMinutes={remainderWorkBlock}
-            blockType={"Task"}
+      {remainderWorkBlock > 0 &&
+        fullDurationBlocks.length === completedBlocks.length && (
+          <PomodoroBlock
+            taskDurationInMinutes={remainderWorkBlock}
+            breakDurationInMinutes={pomodoroBreakBlockInMinutes}
           />
-          <PomodoroCell
-            durationInMinutes={pomodoroBreakBlockInMinutes}
-            blockType={"Break"}
-          />
-        </>
-      )}
+        )}
     </>
   );
 };
