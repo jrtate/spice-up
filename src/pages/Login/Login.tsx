@@ -4,7 +4,7 @@ import { LoadingButton } from "@mui/lab";
 import { LoginContainer } from "./styles";
 import { Link, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../../api/AuthApi";
-import { useToast } from "../../hooks/Toast";
+import { useToast } from "../../hooks/useToast";
 
 const Login = () => {
   const navigate = useNavigate();

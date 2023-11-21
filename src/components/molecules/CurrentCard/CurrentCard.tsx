@@ -13,7 +13,7 @@ import { StyledCard } from "./styles";
 import { DaysOfWeek, Task } from "models/task";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteTaskMutation } from "api/TasksApi";
-import { useToast } from "hooks/Toast";
+import { useToast } from "hooks/useToast";
 import EditTaskModal from "pages/Plan/EditTaskModal/EditTaskModal";
 import { format, formatDuration, intervalToDuration } from "date-fns";
 import {

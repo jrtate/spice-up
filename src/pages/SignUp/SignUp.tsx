@@ -3,7 +3,7 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { SignUpContainer } from "./styles";
 import { useSignUpMutation } from "api/AuthApi";
-import { useToast } from "../../hooks/Toast";
+import { useToast } from "../../hooks/useToast";
 
 const SignUp = () => {
   const navigate = useNavigate();
