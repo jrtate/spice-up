@@ -11,6 +11,7 @@ import {
   useUpdateTaskSortOrderMutation,
 } from "../../api/OrderApi";
 import { useQueryClient } from "@tanstack/react-query";
+import PomodoroTracker from "components/organisms/PomodoroTracker/PomodoroTracker";
 
 const Act = () => {
   const [currentTaskList, setCurrentTaskList] = useState<Task[]>([]);
@@ -92,7 +93,18 @@ const Act = () => {
               setList={(updatedTaskList) => saveSortOrder(updatedTaskList)}
             >
               {currentTaskList?.map((task) => (
-                <CurrentCard key={task.id} task={task} />
+                <Box
+                  key={task.id}
+                  sx={{
+                    display: "flex",
+                    width: "100%",
+                    height: "fit-content",
+                    alignItems: "center",
+                  }}
+                >
+                  <CurrentCard task={task} />
+                  <PomodoroTracker duration={task.duration} />
+                </Box>
               ))}
             </ReactSortable>
           </Box>
