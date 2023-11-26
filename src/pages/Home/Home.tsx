@@ -9,6 +9,7 @@ import Page from "../../components/organisms/Page/Page";
 import ProtectedRoute from "../../components/organisms/ProtectedRoute/ProtectedRoute";
 import axios from "axios";
 import { isTokenValid } from "../../utils/tokenValidation";
+import Brainstorm from "../Brainstorm/Brainstorm";
 
 const Home = () => {
   useEffect(() => {
@@ -42,6 +43,14 @@ const Home = () => {
           element={
             <ProtectedRoute>
               <Page children={<Reflect />} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/brainstorm"
+          element={
+            <ProtectedRoute>
+              <Page children={<Brainstorm />} />
             </ProtectedRoute>
           }
         />
