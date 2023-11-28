@@ -79,9 +79,14 @@ const GoalRow = ({ goal }: GoalRowProps) => {
           </Tooltip>
         )}
         <Tooltip title="Delete Goal">
-          <IconButton onClick={() => deleteGoal.mutate(goal?.id)}>
-            <DeleteIcon />
-          </IconButton>
+          <span>
+            <IconButton
+              disabled={!isEditing}
+              onClick={() => deleteGoal.mutate(goal?.id)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </span>
         </Tooltip>
       </Box>
 
@@ -105,10 +110,12 @@ const GoalRow = ({ goal }: GoalRowProps) => {
           }}
         >
           {goal?.subGoals?.map((subGoal) => (
-            <Box sx={{ display: "flex", justifyContent: "flex-start", gap: 4 }}>
+            <Box
+              key={subGoal.id}
+              sx={{ display: "flex", justifyContent: "flex-start", gap: 4 }}
+            >
               <SubGoalColumn goalId={goal.id} subGoal={subGoal} />
               <Divider
-                key={subGoal.id}
                 orientation="vertical"
                 sx={{ width: "1px", height: "100%" }}
                 variant="middle"

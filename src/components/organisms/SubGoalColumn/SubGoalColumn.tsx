@@ -78,12 +78,14 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
           </Tooltip>
         )}
         <Tooltip title="Delete Sub-goal">
-          <IconButton
-            disabled={!isEditing}
-            onClick={() => deleteSubGoal.mutate(subGoal?.id)}
-          >
-            <DeleteIcon />
-          </IconButton>
+          <span>
+            <IconButton
+              disabled={!isEditing}
+              onClick={() => deleteSubGoal.mutate(subGoal?.id)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </span>
         </Tooltip>
       </Box>
 

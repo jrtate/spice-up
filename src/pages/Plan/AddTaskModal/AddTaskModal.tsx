@@ -14,7 +14,7 @@ interface AddTaskModalProps {
 const AddTaskModal = ({ show, closeModal, subGoalId }: AddTaskModalProps) => {
   const queryClient = useQueryClient();
   const [description, setDescription] = useState<string>("");
-  const [duration, setDuration] = useState<number>(null);
+  const [duration, setDuration] = useState<number>(15);
   const [isRecurring, setIsRecurring] = useState<boolean>(true);
   const [isRandom, setIsRandom] = useState<boolean>(false);
   const [checkedDays, setCheckedDays] = useState<DaysOfWeek[]>([]);

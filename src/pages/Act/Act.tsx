@@ -44,6 +44,8 @@ const Act = () => {
 
         if (matchingTask) {
           return matchingTask;
+        } else {
+          return false;
         }
       })
       ?.sort((taskA, taskB) => {
