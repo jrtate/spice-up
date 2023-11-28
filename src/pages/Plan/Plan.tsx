@@ -7,6 +7,7 @@ import AddTaskModal from "./AddTaskModal/AddTaskModal";
 import { useGetTasksQuery } from "api/TasksApi";
 import PageLoader from "../../components/atoms/PageLoader/PageLoader";
 import { useGetTaskOrdersQuery } from "api/OrderApi";
+import { Box } from "@mui/material";
 
 const Plan = () => {
   const [showAddTaskModal, setShowAddTaskModal] = useState<boolean>(false);
@@ -39,7 +40,7 @@ const Plan = () => {
       {isLoading ? (
         <PageLoader />
       ) : (
-        <>
+        <Box sx={{ display: "flex", width: "100%", gap: 1 }} p={1}>
           <CalendarColumn
             header="Monday"
             taskList={getTasksForColumn(DaysOfWeek.Monday)}
@@ -68,7 +69,7 @@ const Plan = () => {
             header="Sunday"
             taskList={getTasksForColumn(DaysOfWeek.Sunday)}
           />
-        </>
+        </Box>
       )}
 
       <FloatingAddButton onClick={() => setShowAddTaskModal(true)} />

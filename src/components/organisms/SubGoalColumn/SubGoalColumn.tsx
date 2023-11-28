@@ -87,7 +87,11 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
         </Tooltip>
       </Box>
 
-      {subGoal?.tasks?.map((task) => <TaskCard task={task} />)}
+      {subGoal?.tasks?.map((task) => (
+        <Box key={task.id} marginBottom={2} width={"100%"}>
+          <TaskCard task={task} />
+        </Box>
+      ))}
 
       <Button
         variant="outlined"

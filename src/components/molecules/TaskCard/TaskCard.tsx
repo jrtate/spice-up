@@ -37,7 +37,7 @@ const TaskCard = ({ task }: TaskDisplayCardProps) => {
   };
 
   return (
-    <Box sx={{ m: 2, width: "100%" }}>
+    <Box sx={{ width: "100%" }}>
       <EditTaskModal
         show={showEditTaskModal}
         closeModal={() => setShowEditTaskModal(false)}
