@@ -4,7 +4,7 @@ import axios from "axios";
 
 const BASE_URL = "/task-completion";
 
-export const useGetCompletionCount = (id: number) =>
+export const useGetTaskCompletionCount = (id: number) =>
   useQuery<number, null>({
     queryKey: [`${id}-completionCount`],
     queryFn: async () => {

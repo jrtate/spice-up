@@ -12,6 +12,11 @@ import {
   useDeleteSubGoalMutation,
 } from "../../../api/SubGoalsApi";
 import TaskCard from "../../molecules/TaskCard/TaskCard";
+import CheckIcon from "@mui/icons-material/Check";
+import {
+  useCompleteSubGoalMutation,
+  useUnCompleteSubGoalMutation,
+} from "../../../api/SubGoalCompletionApi";
 
 interface GoalColumnProps {
   goalId?: number;
@@ -24,12 +29,22 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
   const saveSubGoal = useAddSubGoalMutation(queryClient);
   const editSubGoal = useEditSubGoalMutation(queryClient);
   const deleteSubGoal = useDeleteSubGoalMutation(queryClient);
+  const completeSubGoal = useCompleteSubGoalMutation(queryClient);
+  const unCompleteSubGoal = useUnCompleteSubGoalMutation(queryClient);
   const [showAddTaskModal, setShowAddTaskModal] = useState<boolean>(false);
   const [description, setDescription] = useState<string>("");
 
   useEffect(() => {
     if (isEditing) setDescription(subGoal?.description);
   }, [subGoal]);
+
+  const handleCompleteClick = () => {
+    if (!subGoal?.isCompleted) {
+      completeSubGoal.mutate(subGoal?.id);
+    } else if (subGoal?.isCompleted) {
+      unCompleteSubGoal.mutate(subGoal?.id);
+    }
+  };
 
   return (
     <Box
@@ -86,6 +101,15 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
               <DeleteIcon />
             </IconButton>
           </span>
+        </Tooltip>
+        <Tooltip title="Complete">
+          <IconButton
+            color={subGoal?.isCompleted ? "success" : "primary"}
+            size="small"
+            onClick={() => handleCompleteClick()}
+          >
+            <CheckIcon />
+          </IconButton>
         </Tooltip>
       </Box>
 

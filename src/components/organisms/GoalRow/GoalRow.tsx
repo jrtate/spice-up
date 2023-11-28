@@ -18,6 +18,17 @@ import {
   useEditGoalMutation,
 } from "../../../api/GoalsApi";
 import { Goal } from "../../../models/Goal";
+import CheckIcon from "@mui/icons-material/Check";
+import { DaysOfWeek } from "../../../models/Task";
+import { format } from "date-fns";
+import {
+  useCompleteTaskMutation,
+  useUnCompleteTaskMutation,
+} from "../../../api/TaskCompletionApi";
+import {
+  useCompleteGoalMutation,
+  useUnCompleteGoalMutation,
+} from "../../../api/GoalCompletionApi";
 
 interface GoalRowProps {
   goal?: Goal;
@@ -29,11 +40,21 @@ const GoalRow = ({ goal }: GoalRowProps) => {
   const saveGoal = useAddGoalMutation(queryClient);
   const editGoal = useEditGoalMutation(queryClient);
   const deleteGoal = useDeleteGoalMutation(queryClient);
+  const completeGoal = useCompleteGoalMutation(queryClient);
+  const unCompleteGoal = useUnCompleteGoalMutation(queryClient);
   const [description, setDescription] = useState<string>("");
 
   useEffect(() => {
     setDescription(goal?.description);
   }, [goal]);
+
+  const handleCompleteClick = () => {
+    if (!goal?.isCompleted) {
+      completeGoal.mutate(goal?.id);
+    } else if (goal?.isCompleted) {
+      unCompleteGoal.mutate(goal?.id);
+    }
+  };
 
   return (
     <Box
@@ -87,6 +108,15 @@ const GoalRow = ({ goal }: GoalRowProps) => {
               <DeleteIcon />
             </IconButton>
           </span>
+        </Tooltip>
+        <Tooltip title="Complete">
+          <IconButton
+            color={goal?.isCompleted ? "success" : "primary"}
+            size="small"
+            onClick={() => handleCompleteClick()}
+          >
+            <CheckIcon />
+          </IconButton>
         </Tooltip>
       </Box>
 

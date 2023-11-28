@@ -13,7 +13,7 @@ import { useDeleteTaskMutation } from "../../../api/TasksApi";
 import { useToast } from "hooks/useToast";
 import EditTaskModal from "pages/Plan/EditTaskModal/EditTaskModal";
 import { formatDuration, intervalToDuration } from "date-fns";
-import { useGetCompletionCount } from "../../../api/TaskCompletionApi";
+import { useGetTaskCompletionCount } from "../../../api/TaskCompletionApi";
 
 interface TaskDisplayCardProps {
   task: Task;
@@ -29,7 +29,7 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
       ),
     [task.duration],
   );
-  const { data: taskCompletions } = useGetCompletionCount(task.id);
+  const { data: taskCompletions } = useGetTaskCompletionCount(task.id);
   const [showEditTaskModal, setShowEditTaskModal] = useState<boolean>(false);
   const deleteTask = useDeleteTaskMutation(queryClient);
   const { handleSetShowToast } = useToast();
