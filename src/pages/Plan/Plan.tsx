@@ -24,7 +24,7 @@ const Plan = () => {
       };
 
       return taskData
-        ?.filter?.((task) => task.daysOfWeek.some((day) => day === key))
+        ?.filter?.((task) => task?.daysOfWeek?.some((day) => day === key))
         .sort((taskA, taskB) => {
           const taskASortOrder = getSortOrder(taskA, key);
           const taskBSortOrder = getSortOrder(taskB, key);

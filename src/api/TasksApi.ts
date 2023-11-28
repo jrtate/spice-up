@@ -6,7 +6,7 @@ const BASE_URL = "/tasks";
 
 export const useGetTasksQuery = () =>
   useQuery<Task[], null>({
-    queryKey: ["tasks"],
+    queryKey: ["goals"],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}${BASE_URL}`,
@@ -21,7 +21,7 @@ export const useAddTaskMutation = (queryClient: QueryClient) =>
       axios.post(`${process.env.REACT_APP_BASE_URL}${BASE_URL}`, task),
     onSuccess: () => {
       // Invalidate and re-fetch
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
     },
   });
 
@@ -34,7 +34,7 @@ export const useEditTaskMutation = (queryClient: QueryClient) =>
       ),
     onSuccess: () => {
       // Invalidate and re-fetch
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
     },
   });
 
@@ -44,6 +44,6 @@ export const useDeleteTaskMutation = (queryClient: QueryClient) =>
       axios.delete(`${process.env.REACT_APP_BASE_URL}${BASE_URL}/${id}`),
     onSuccess: () => {
       // Invalidate and re-fetch
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
     },
   });
