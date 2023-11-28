@@ -91,7 +91,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
 
       {subGoal?.tasks?.map((task) => (
         <Box key={task.id} marginBottom={2} width={"100%"}>
-          <TaskCard task={task} />
+          <TaskCard task={task} showCompletionStats={true} />
         </Box>
       ))}
 

@@ -1,8 +1,19 @@
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { CompletedTask } from "../models/Task";
 import axios from "axios";
 
 const BASE_URL = "/task-completion";
+
+export const useGetCompletionCount = (id: number) =>
+  useQuery<number, null>({
+    queryKey: [`${id}-completionCount`],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}${BASE_URL}/complete/${id}`,
+      );
+      return response.data.length;
+    },
+  });
 
 export const useCompleteTaskMutation = (queryClient: QueryClient) =>
   useMutation({
@@ -13,7 +24,7 @@ export const useCompleteTaskMutation = (queryClient: QueryClient) =>
       ),
     onSuccess: () => {
       // Invalidate and re-fetch
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
     },
   });
 
@@ -25,6 +36,6 @@ export const useUnCompleteTaskMutation = (queryClient: QueryClient) =>
       ),
     onSuccess: () => {
       // Invalidate and re-fetch
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
     },
   });
