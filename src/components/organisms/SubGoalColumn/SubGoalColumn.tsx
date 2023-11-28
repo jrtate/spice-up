@@ -39,40 +39,53 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
         alignItems: "center",
       }}
     >
-      <TextField
-        sx={{ marginBottom: 4 }}
-        variant={"standard"}
-        label="Sub-goal"
-        value={description}
-        onChange={(e) => {
-          setDescription(e.target.value);
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-start",
         }}
-      />
-      {isEditing ? (
-        <Tooltip title="Edit Sub-goal">
+      >
+        <TextField
+          sx={{ marginBottom: 4 }}
+          variant={"standard"}
+          label="Sub-goal"
+          value={description}
+          onChange={(e) => {
+            setDescription(e.target.value);
+          }}
+        />
+        {isEditing ? (
+          <Tooltip title="Edit Sub-goal">
+            <IconButton
+              onClick={() =>
+                editSubGoal.mutate({ id: subGoal?.id, description })
+              }
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Create Sub-goal">
+            <IconButton
+              onClick={() => {
+                saveSubGoal.mutate({ goalId, description });
+                setDescription("");
+              }}
+            >
+              <AddIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+        <Tooltip title="Delete Sub-goal">
           <IconButton
-            onClick={() => editSubGoal.mutate({ id: subGoal?.id, description })}
+            disabled={!isEditing}
+            onClick={() => deleteSubGoal.mutate(subGoal?.id)}
           >
-            <EditIcon />
+            <DeleteIcon />
           </IconButton>
         </Tooltip>
-      ) : (
-        <Tooltip title="Create Sub-goal">
-          <IconButton
-            onClick={() => {
-              saveSubGoal.mutate({ goalId, description });
-              setDescription("");
-            }}
-          >
-            <AddIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-      <Tooltip title="Delete Sub-goal">
-        <IconButton onClick={() => deleteSubGoal.mutate(subGoal?.id)}>
-          <DeleteIcon />
-        </IconButton>
-      </Tooltip>
+      </Box>
 
       {subGoal?.tasks?.map((task) => <TaskCard task={task} />)}
 

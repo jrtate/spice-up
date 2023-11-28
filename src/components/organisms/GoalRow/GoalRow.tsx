@@ -44,12 +44,7 @@ const GoalRow = ({ goal }: GoalRowProps) => {
         alignItems: "flex-start",
       }}
     >
-      <Typography
-        marginBottom={3}
-        variant="h5"
-        color="text.secondary"
-        gutterBottom
-      >
+      <Typography marginBottom={3} variant="h5" gutterBottom>
         Set a goal:
       </Typography>
       <Box
@@ -91,19 +86,33 @@ const GoalRow = ({ goal }: GoalRowProps) => {
       </Box>
 
       <Box>
-        <Typography
-          marginBottom={3}
-          variant="h6"
-          color="text.secondary"
-          gutterBottom
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Typography
+            color={"text.secondary"}
+            sx={{ maxWidth: 900 }}
+            marginBottom={3}
+            variant="h6"
+          >
+            Break down the main goal into essential sub-goals:
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            gap: 4,
+            marginLeft: 4,
+          }}
         >
-          What will you need to do to accomplish this goal?
-        </Typography>
-        <Box sx={{ display: "flex", gap: 4, marginLeft: 4 }}>
-          {goal?.subGoals?.map((subGoal, i) => (
-            <Box key={subGoal.id}>
-              {i > 0 && <Divider orientation="vertical" flexItem />}
+          {goal?.subGoals?.map((subGoal) => (
+            <Box sx={{ display: "flex", justifyContent: "flex-start", gap: 4 }}>
               <SubGoalColumn goalId={goal.id} subGoal={subGoal} />
+              <Divider
+                key={subGoal.id}
+                orientation="vertical"
+                sx={{ width: "1px", height: "100%" }}
+                variant="middle"
+              />
             </Box>
           ))}
           <SubGoalColumn goalId={goal?.id} />
