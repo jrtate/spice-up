@@ -96,6 +96,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
       ))}
 
       <Button
+        disabled={!subGoal?.id}
         variant="outlined"
         startIcon={<AddIcon />}
         onClick={() => setShowAddTaskModal(true)}

@@ -63,7 +63,7 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
           >
             Duration: {duration}.
           </Typography>
-          {showCompletionStats && (
+          {showCompletionStats && task?.isRecurring && (
             <Typography mt={1} variant={"body1"} color="text.secondary">
               Number of times completed: {taskCompletions || 0}
             </Typography>
