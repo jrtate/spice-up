@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Skeleton } from "@mui/material";
 
-const PlanLoader = () => {
+const PageLoader = () => {
   return (
     <Box
       p={2}
@@ -19,4 +19,4 @@ const PlanLoader = () => {
   );
 };
 
-export default PlanLoader;
+export default PageLoader;

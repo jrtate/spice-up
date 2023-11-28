@@ -1,6 +1,6 @@
 import axios from "axios";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
-import { Task } from "../models/task";
+import { Task } from "../models/Task";
 
 const BASE_URL = "/tasks";
 

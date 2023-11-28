@@ -1,16 +1,25 @@
 import React, { useState } from "react";
-import { Box, Divider, Fab, Tooltip } from "@mui/material";
-import PlanLoader from "../Plan/PlanLoader/PlanLoader";
+import { Box, Fab, Tooltip } from "@mui/material";
+import PageLoader from "../../components/atoms/PageLoader/PageLoader";
 import GoalRow from "../../components/organisms/GoalRow/GoalRow";
 import AddIcon from "@mui/icons-material/Add";
+import { useGetGoalsQuery } from "../../api/GoalsApi";
 
 const Brainstorm = () => {
-  const [goals, setGoals] = useState<number[]>([1]);
-  const isLoading = false;
+  const { data: goals, isLoading } = useGetGoalsQuery();
+  const [blankGoals, setBlankGoals] = useState<number[]>([]);
 
-  return (
+  return isLoading ? (
+    <PageLoader />
+  ) : (
     <Box p={1}>
-      {isLoading ? <PlanLoader /> : goals.map((goal) => <GoalRow key={goal} />)}
+      {goals?.map((goal) => <GoalRow key={goal?.id} goal={goal} />)}
+
+      {!goals?.length ? (
+        <GoalRow />
+      ) : (
+        blankGoals?.map((i) => <GoalRow key={i} />)
+      )}
 
       <Box
         marginTop={2}
@@ -20,7 +29,10 @@ const Brainstorm = () => {
           <Fab
             color="primary"
             onClick={() =>
-              setGoals((prevState) => [...prevState, goals.length + 1])
+              setBlankGoals((prevState) => [
+                ...prevState,
+                blankGoals.length + 1,
+              ])
             }
           >
             <AddIcon />

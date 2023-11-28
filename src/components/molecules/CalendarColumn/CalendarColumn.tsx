@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import CalendarHeader from "../../atoms/CalendarHeader/CalendarHeader";
 import TaskCard from "../TaskCard/TaskCard";
 import { ReactSortable } from "react-sortablejs";
-import { DaysOfWeek, Task } from "../../../models/task";
+import { DaysOfWeek, Task } from "../../../models/Task";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateTaskSortOrderMutation } from "../../../api/OrderApi";
 

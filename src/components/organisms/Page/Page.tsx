@@ -55,6 +55,19 @@ const Page = ({ children }: any) => {
               }}
             >
               <Tooltip title="Plan" placement="right">
+                <Link to="/brainstorm">
+                  <Paper elevation={path === "/brainstorm" ? 3 : 0}>
+                    <IconButton
+                      onClick={() => setPath("/brainstorm")}
+                      color="primary"
+                    >
+                      <EmojiObjectsIcon />
+                    </IconButton>
+                  </Paper>
+                </Link>
+              </Tooltip>
+
+              <Tooltip title="Arrange" placement="right">
                 <Link to="/plan">
                   <Paper elevation={path === "/plan" ? 3 : 0}>
                     <IconButton
@@ -72,32 +85,6 @@ const Page = ({ children }: any) => {
                   <Paper elevation={path === "/act" ? 3 : 0}>
                     <IconButton onClick={() => setPath("/act")} color="primary">
                       <PendingActionsIcon />
-                    </IconButton>
-                  </Paper>
-                </Link>
-              </Tooltip>
-
-              {/*<Tooltip title="Reflect" placement="right">
-                <Link to="/reflect">
-                  <Paper elevation={path === "/reflect" ? 3 : 0}>
-                    <IconButton
-                      onClick={() => setPath("/reflect")}
-                      color="primary"
-                    >
-                      <LocalCafeIcon />
-                    </IconButton>
-                  </Paper>
-                </Link>
-              </Tooltip>*/}
-
-              <Tooltip title="Brainstorm" placement="right">
-                <Link to="/brainstorm">
-                  <Paper elevation={path === "/brainstorm" ? 3 : 0}>
-                    <IconButton
-                      onClick={() => setPath("/brainstorm")}
-                      color="primary"
-                    >
-                      <EmojiObjectsIcon />
                     </IconButton>
                   </Paper>
                 </Link>

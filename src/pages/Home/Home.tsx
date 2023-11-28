@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import Plan from "pages/Plan/Plan";
 import Act from "../Act/Act";
-import Reflect from "../Reflect/Reflect";
 import SignUp from "../SignUp/SignUp";
 import Login from "../Login/Login";
 import Page from "../../components/organisms/Page/Page";
@@ -23,6 +22,14 @@ const Home = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route
+          path="/brainstorm"
+          element={
+            <ProtectedRoute>
+              <Page children={<Brainstorm />} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/plan"
           element={
             <ProtectedRoute>
@@ -38,25 +45,12 @@ const Home = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/reflect"
-          element={
-            <ProtectedRoute>
-              <Page children={<Reflect />} />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/brainstorm"
-          element={
-            <ProtectedRoute>
-              <Page children={<Brainstorm />} />
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           index
-          element={<Navigate to={isTokenValid() ? "/plan" : "login"} replace />}
+          element={
+            <Navigate to={isTokenValid() ? "/brainstorm" : "login"} replace />
+          }
         />
       </Routes>
     </>

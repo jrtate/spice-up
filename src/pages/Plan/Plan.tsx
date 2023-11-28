@@ -2,10 +2,10 @@ import React, { useCallback, useState } from "react";
 import { CalendarContainer } from "./styles";
 import CalendarColumn from "components/molecules/CalendarColumn/CalendarColumn";
 import FloatingAddButton from "components/atoms/FloatingAddButton/FloatingAddButton";
-import { DaysOfWeek, Task } from "models/task";
+import { DaysOfWeek, Task } from "models/Task";
 import AddTaskModal from "./AddTaskModal/AddTaskModal";
 import { useGetTasksQuery } from "api/TasksApi";
-import PlanLoader from "./PlanLoader/PlanLoader";
+import PageLoader from "../../components/atoms/PageLoader/PageLoader";
 import { useGetTaskOrdersQuery } from "api/OrderApi";
 
 const Plan = () => {
@@ -37,7 +37,7 @@ const Plan = () => {
   return (
     <CalendarContainer>
       {isLoading ? (
-        <PlanLoader />
+        <PageLoader />
       ) : (
         <>
           <CalendarColumn

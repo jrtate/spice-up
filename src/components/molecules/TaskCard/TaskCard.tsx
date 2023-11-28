@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { StyledCard } from "./styles";
-import { Task } from "../../../models/task";
+import { Task } from "../../../models/Task";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteTaskMutation } from "../../../api/TasksApi";
 import { useToast } from "hooks/useToast";

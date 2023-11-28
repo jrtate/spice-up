@@ -1,5 +1,6 @@
 export interface Task {
   id: number;
+  subGoalId?: number;
   description: string;
   duration: number;
   isRecurring: boolean;

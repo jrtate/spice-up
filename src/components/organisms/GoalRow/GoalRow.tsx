@@ -1,21 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Divider,
-  Fab,
   IconButton,
   TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import GoalColumn from "../GoalColumn/GoalColumn";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SubGoalColumn from "../SubGoalColumn/SubGoalColumn";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  useAddGoalMutation,
+  useDeleteGoalMutation,
+  useEditGoalMutation,
+} from "../../../api/GoalsApi";
+import { Goal } from "../../../models/Goal";
 
-interface GoalRowProps {}
+interface GoalRowProps {
+  goal?: Goal;
+}
 
-const GoalRow = ({}: GoalRowProps) => {
-  const [goal, setGoal] = useState<string>("");
-  const [subGoals, setSubGoals] = useState<number[]>([]);
+const GoalRow = ({ goal }: GoalRowProps) => {
+  const isEditing = useMemo(() => goal?.id > 0, [goal]);
+  const queryClient = useQueryClient();
+  const saveGoal = useAddGoalMutation(queryClient);
+  const editGoal = useEditGoalMutation(queryClient);
+  const deleteGoal = useDeleteGoalMutation(queryClient);
+  const [description, setDescription] = useState<string>("");
+
+  useEffect(() => {
+    setDescription(goal?.description);
+  }, [goal]);
 
   return (
     <Box
@@ -43,42 +61,54 @@ const GoalRow = ({}: GoalRowProps) => {
       >
         <TextField
           sx={{ marginRight: 1 }}
-          variant={"outlined"}
+          variant={"standard"}
           label="Goal"
-          value={goal}
+          value={description}
           onChange={(e) => {
-            setGoal(e.target.value);
+            setDescription(e.target.value);
           }}
         />
-        <Tooltip title="Create Goal">
-          <IconButton
-            color="success"
-            onClick={() =>
-              setSubGoals((prevState) => [...prevState, subGoals.length + 1])
-            }
-          >
-            <AddIcon />
+        {isEditing ? (
+          <Tooltip title="Edit Goal">
+            <IconButton
+              onClick={() => editGoal.mutate({ id: goal?.id, description })}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Create Goal">
+            <IconButton onClick={() => saveGoal.mutate({ description })}>
+              <AddIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+        <Tooltip title="Delete Goal">
+          <IconButton onClick={() => deleteGoal.mutate(goal?.id)}>
+            <DeleteIcon />
           </IconButton>
         </Tooltip>
       </Box>
 
-      {subGoals.length > 0 && (
-        <Box>
-          <Typography
-            marginBottom={3}
-            variant="h6"
-            color="text.secondary"
-            gutterBottom
-          >
-            What will you need to do to accomplish this goal?
-          </Typography>
-          <Box sx={{ display: "flex", gap: 4, marginLeft: 4 }}>
-            {subGoals.map((subGoal) => (
-              <GoalColumn key={subGoal} id={subGoal} />
-            ))}
-          </Box>
+      <Box>
+        <Typography
+          marginBottom={3}
+          variant="h6"
+          color="text.secondary"
+          gutterBottom
+        >
+          What will you need to do to accomplish this goal?
+        </Typography>
+        <Box sx={{ display: "flex", gap: 4, marginLeft: 4 }}>
+          {goal?.subGoals?.map((subGoal, i) => (
+            <Box key={subGoal.id}>
+              {i > 0 && <Divider orientation="vertical" flexItem />}
+              <SubGoalColumn goalId={goal.id} subGoal={subGoal} />
+            </Box>
+          ))}
+          <SubGoalColumn goalId={goal?.id} />
         </Box>
-      )}
+      </Box>
 
       <Divider
         sx={{ height: 1, width: "100%", marginTop: 12 }}

@@ -1,5 +1,5 @@
 import { QueryClient, useMutation } from "@tanstack/react-query";
-import { CompletedTask } from "../models/task";
+import { CompletedTask } from "../models/Task";
 import axios from "axios";
 
 const BASE_URL = "/task-completion";

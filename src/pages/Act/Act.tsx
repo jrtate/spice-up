@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { useGetTasksQuery } from "../../api/TasksApi";
-import { DaysOfWeek, Task } from "../../models/task";
-import PlanLoader from "pages/Plan/PlanLoader/PlanLoader";
+import { DaysOfWeek, Task } from "../../models/Task";
+import PageLoader from "components/atoms/PageLoader/PageLoader";
 import { Box, Typography } from "@mui/material";
 import { ReactSortable } from "react-sortablejs";
 import CurrentCard from "components/molecules/CurrentCard/CurrentCard";
@@ -74,7 +74,7 @@ const Act = () => {
   return (
     <Box p={1} sx={{ width: "100%", height: "100%" }}>
       {isLoading ? (
-        <PlanLoader />
+        <PageLoader />
       ) : (
         <Box m={3}>
           <Typography variant="h6" gutterBottom>

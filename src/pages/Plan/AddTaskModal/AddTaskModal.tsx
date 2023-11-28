@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { DaysOfWeek } from "models/task";
+import { DaysOfWeek } from "models/Task";
 import { useAddTaskMutation } from "api/TasksApi";
 import { useToast } from "hooks/useToast";
 import { useQueryClient } from "@tanstack/react-query";
@@ -8,9 +8,10 @@ import TaskModalFrame from "../TaskModalFrame/TaskModalFrame";
 interface AddTaskModalProps {
   show: boolean;
   closeModal: () => void;
+  subGoalId?: number;
 }
 
-const AddTaskModal = ({ show, closeModal }: AddTaskModalProps) => {
+const AddTaskModal = ({ show, closeModal, subGoalId }: AddTaskModalProps) => {
   const queryClient = useQueryClient();
   const [description, setDescription] = useState<string>("");
   const [duration, setDuration] = useState<number>(null);
@@ -42,6 +43,7 @@ const AddTaskModal = ({ show, closeModal }: AddTaskModalProps) => {
     try {
       addTask.mutate({
         id: Math.random(),
+        subGoalId: subGoalId,
         description,
         duration,
         isRecurring,

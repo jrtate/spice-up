@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { DaysOfWeek, Task } from "models/task";
+import { DaysOfWeek, Task } from "models/Task";
 import { useEditTaskMutation } from "api/TasksApi";
 import { useToast } from "hooks/useToast";
 import { useQueryClient } from "@tanstack/react-query";
