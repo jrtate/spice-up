@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import CalendarHeader from "../../atoms/CalendarHeader/CalendarHeader";
 import TaskCard from "../TaskCard/TaskCard";
 import { ReactSortable } from "react-sortablejs";
-import { DaysOfWeek, Task } from "../../../models/task";
+import { DaysOfWeek, Task } from "../../../models/Task";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateTaskSortOrderMutation } from "../../../api/OrderApi";
 
@@ -38,15 +38,16 @@ const CalendarColumn = ({ header, taskList }: CalendarColumnProps) => {
   return (
     <Box width="100%">
       <Box
-        m={1}
+        marginBottom={2}
         sx={{
+          width: "100%",
           textAlign: "center",
           bgcolor: "#272727",
           borderRadius: "2px",
           padding: 1,
-          border: `${
-            format(new Date(), "eeee") === header ? 1 : 0
-          }px solid #f2f2f2`,
+          border: `1px solid ${
+            format(new Date(), "eeee") === header ? "#f2f2f2" : "transparent"
+          }`,
         }}
       >
         <CalendarHeader label={header} />
@@ -56,7 +57,11 @@ const CalendarColumn = ({ header, taskList }: CalendarColumnProps) => {
         list={tasks || []}
         setList={(updatedTaskList) => saveSortOrder(updatedTaskList)}
       >
-        {tasks?.map((task) => <TaskCard key={task.id} task={task} />)}
+        {tasks?.map((task) => (
+          <Box key={task.id} marginBottom={2}>
+            <TaskCard task={task} />
+          </Box>
+        ))}
       </ReactSortable>
     </Box>
   );

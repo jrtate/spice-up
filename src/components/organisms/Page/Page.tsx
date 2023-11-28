@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import LogoutIcon from "@mui/icons-material/Logout";
+import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 import { PageContainer } from "./styles";
 import axios from "axios";
 
@@ -54,6 +55,19 @@ const Page = ({ children }: any) => {
               }}
             >
               <Tooltip title="Plan" placement="right">
+                <Link to="/brainstorm">
+                  <Paper elevation={path === "/brainstorm" ? 3 : 0}>
+                    <IconButton
+                      onClick={() => setPath("/brainstorm")}
+                      color="primary"
+                    >
+                      <EmojiObjectsIcon />
+                    </IconButton>
+                  </Paper>
+                </Link>
+              </Tooltip>
+
+              <Tooltip title="Arrange" placement="right">
                 <Link to="/plan">
                   <Paper elevation={path === "/plan" ? 3 : 0}>
                     <IconButton
@@ -75,19 +89,6 @@ const Page = ({ children }: any) => {
                   </Paper>
                 </Link>
               </Tooltip>
-
-              {/*<Tooltip title="Reflect" placement="right">
-                <Link to="/reflect">
-                  <Paper elevation={path === "/reflect" ? 3 : 0}>
-                    <IconButton
-                      onClick={() => setPath("/reflect")}
-                      color="primary"
-                    >
-                      <LocalCafeIcon />
-                    </IconButton>
-                  </Paper>
-                </Link>
-              </Tooltip>*/}
             </Box>
 
             <Box

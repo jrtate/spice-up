@@ -1,11 +1,11 @@
 import axios from "axios";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
-import { Task } from "../models/Task";
+import { Goal } from "../models/Goal";
 
-const BASE_URL = "/tasks";
+const BASE_URL = "/goals";
 
-export const useGetTasksQuery = () =>
-  useQuery<Task[], null>({
+export const useGetGoalsQuery = () =>
+  useQuery<Goal[], null>({
     queryKey: ["goals"],
     queryFn: async () => {
       const response = await axios.get(
@@ -15,22 +15,22 @@ export const useGetTasksQuery = () =>
     },
   });
 
-export const useAddTaskMutation = (queryClient: QueryClient) =>
+export const useAddGoalMutation = (queryClient: QueryClient) =>
   useMutation({
-    mutationFn: (task: Task) =>
-      axios.post(`${process.env.REACT_APP_BASE_URL}${BASE_URL}`, task),
+    mutationFn: (goal: Goal) =>
+      axios.post(`${process.env.REACT_APP_BASE_URL}${BASE_URL}`, goal),
     onSuccess: () => {
       // Invalidate and re-fetch
       queryClient.invalidateQueries({ queryKey: ["goals"] });
     },
   });
 
-export const useEditTaskMutation = (queryClient: QueryClient) =>
+export const useEditGoalMutation = (queryClient: QueryClient) =>
   useMutation({
-    mutationFn: (task: Task) =>
+    mutationFn: (goal: Goal) =>
       axios.put(
-        `${process.env.REACT_APP_BASE_URL}${BASE_URL}/${task.id}`,
-        task,
+        `${process.env.REACT_APP_BASE_URL}${BASE_URL}/${goal.id}`,
+        goal,
       ),
     onSuccess: () => {
       // Invalidate and re-fetch
@@ -38,7 +38,7 @@ export const useEditTaskMutation = (queryClient: QueryClient) =>
     },
   });
 
-export const useDeleteTaskMutation = (queryClient: QueryClient) =>
+export const useDeleteGoalMutation = (queryClient: QueryClient) =>
   useMutation({
     mutationFn: (id: number) =>
       axios.delete(`${process.env.REACT_APP_BASE_URL}${BASE_URL}/${id}`),

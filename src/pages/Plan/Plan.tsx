@@ -2,11 +2,12 @@ import React, { useCallback, useState } from "react";
 import { CalendarContainer } from "./styles";
 import CalendarColumn from "components/molecules/CalendarColumn/CalendarColumn";
 import FloatingAddButton from "components/atoms/FloatingAddButton/FloatingAddButton";
-import { DaysOfWeek, Task } from "models/task";
+import { DaysOfWeek, Task } from "models/Task";
 import AddTaskModal from "./AddTaskModal/AddTaskModal";
 import { useGetTasksQuery } from "api/TasksApi";
-import PlanLoader from "./PlanLoader/PlanLoader";
+import PageLoader from "../../components/atoms/PageLoader/PageLoader";
 import { useGetTaskOrdersQuery } from "api/OrderApi";
+import { Box } from "@mui/material";
 
 const Plan = () => {
   const [showAddTaskModal, setShowAddTaskModal] = useState<boolean>(false);
@@ -23,7 +24,7 @@ const Plan = () => {
       };
 
       return taskData
-        ?.filter?.((task) => task.daysOfWeek.some((day) => day === key))
+        ?.filter?.((task) => task?.daysOfWeek?.some((day) => day === key))
         .sort((taskA, taskB) => {
           const taskASortOrder = getSortOrder(taskA, key);
           const taskBSortOrder = getSortOrder(taskB, key);
@@ -37,9 +38,9 @@ const Plan = () => {
   return (
     <CalendarContainer>
       {isLoading ? (
-        <PlanLoader />
+        <PageLoader />
       ) : (
-        <>
+        <Box sx={{ display: "flex", width: "100%", gap: 1 }} p={1}>
           <CalendarColumn
             header="Monday"
             taskList={getTasksForColumn(DaysOfWeek.Monday)}
@@ -68,7 +69,7 @@ const Plan = () => {
             header="Sunday"
             taskList={getTasksForColumn(DaysOfWeek.Sunday)}
           />
-        </>
+        </Box>
       )}
 
       <FloatingAddButton onClick={() => setShowAddTaskModal(true)} />

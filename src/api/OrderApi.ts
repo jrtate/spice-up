@@ -1,5 +1,5 @@
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
-import { TaskOrder } from "../models/task";
+import { TaskOrder } from "../models/Task";
 import axios from "axios";
 
 const BASE_URL = "/order";

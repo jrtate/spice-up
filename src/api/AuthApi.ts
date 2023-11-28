@@ -34,7 +34,7 @@ export const useLoginMutation = (navigate, handleSetShowToast) =>
       sessionStorage.setItem("tokenExpiration", `${expiration}`);
       sessionStorage.setItem("token", token);
       axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
-      navigate("/plan");
+      navigate("/brainstorm");
     },
     onError: (error) => {
       handleSetShowToast(error.message);

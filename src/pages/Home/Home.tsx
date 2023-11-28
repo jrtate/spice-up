@@ -2,13 +2,13 @@ import React, { useEffect } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import Plan from "pages/Plan/Plan";
 import Act from "../Act/Act";
-import Reflect from "../Reflect/Reflect";
 import SignUp from "../SignUp/SignUp";
 import Login from "../Login/Login";
 import Page from "../../components/organisms/Page/Page";
 import ProtectedRoute from "../../components/organisms/ProtectedRoute/ProtectedRoute";
 import axios from "axios";
 import { isTokenValid } from "../../utils/tokenValidation";
+import Brainstorm from "../Brainstorm/Brainstorm";
 
 const Home = () => {
   useEffect(() => {
@@ -21,6 +21,14 @@ const Home = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route
+          path="/brainstorm"
+          element={
+            <ProtectedRoute>
+              <Page children={<Brainstorm />} />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/plan"
           element={
@@ -37,17 +45,12 @@ const Home = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/reflect"
-          element={
-            <ProtectedRoute>
-              <Page children={<Reflect />} />
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           index
-          element={<Navigate to={isTokenValid() ? "/plan" : "login"} replace />}
+          element={
+            <Navigate to={isTokenValid() ? "/brainstorm" : "login"} replace />
+          }
         />
       </Routes>
     </>

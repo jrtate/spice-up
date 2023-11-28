@@ -16,7 +16,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { DaysOfWeek } from "models/task";
+import { DaysOfWeek } from "models/Task";
 import { LoadingButton } from "@mui/lab";
 
 interface ModalFrameProps {

@@ -7,18 +7,20 @@ import {
   Typography,
 } from "@mui/material";
 import { StyledCard } from "./styles";
-import { Task } from "../../../models/task";
+import { Task } from "../../../models/Task";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteTaskMutation } from "../../../api/TasksApi";
 import { useToast } from "hooks/useToast";
 import EditTaskModal from "pages/Plan/EditTaskModal/EditTaskModal";
 import { formatDuration, intervalToDuration } from "date-fns";
+import { useGetCompletionCount } from "../../../api/TaskCompletionApi";
 
 interface TaskDisplayCardProps {
   task: Task;
+  showCompletionStats?: boolean;
 }
 
-const TaskCard = ({ task }: TaskDisplayCardProps) => {
+const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
   const queryClient = useQueryClient();
   const duration = useMemo(
     () =>
@@ -27,6 +29,7 @@ const TaskCard = ({ task }: TaskDisplayCardProps) => {
       ),
     [task.duration],
   );
+  const { data: taskCompletions } = useGetCompletionCount(task.id);
   const [showEditTaskModal, setShowEditTaskModal] = useState<boolean>(false);
   const deleteTask = useDeleteTaskMutation(queryClient);
   const { handleSetShowToast } = useToast();
@@ -37,7 +40,7 @@ const TaskCard = ({ task }: TaskDisplayCardProps) => {
   };
 
   return (
-    <Box sx={{ m: 2 }}>
+    <Box sx={{ width: "100%" }}>
       <EditTaskModal
         show={showEditTaskModal}
         closeModal={() => setShowEditTaskModal(false)}
@@ -45,18 +48,34 @@ const TaskCard = ({ task }: TaskDisplayCardProps) => {
       />
 
       <StyledCard>
-        <CardContent>
+        <CardContent sx={{ height: "100%" }}>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             {task.isRecurring ? "Re-occurring" : "One-time"} Task
           </Typography>
-          <Typography variant="h5" component="div">
-            {task.description}
+          <Typography variant="h6" component="div">
+            {task?.description?.toUpperCase()}
           </Typography>
-          <Typography mt={1} mb={-2} color="text.secondary">
-            {duration}
+          <Typography
+            mt={1}
+            mb={2}
+            variant={"subtitle1"}
+            color="text.secondary"
+          >
+            Duration: {duration}.
           </Typography>
+          {showCompletionStats && (
+            <Typography mt={1} variant={"body1"} color="text.secondary">
+              Number of times completed: {taskCompletions || 0}
+            </Typography>
+          )}
         </CardContent>
-        <CardActions>
+        <CardActions
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+          }}
+        >
           <Button size="small" onClick={() => setShowEditTaskModal(true)}>
             Edit
           </Button>

@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import { StyledCard } from "./styles";
-import { DaysOfWeek, Task } from "models/task";
+import { DaysOfWeek, Task } from "models/Task";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteTaskMutation } from "api/TasksApi";
 import { useToast } from "hooks/useToast";
