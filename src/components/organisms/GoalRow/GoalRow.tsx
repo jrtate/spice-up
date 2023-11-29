@@ -3,6 +3,7 @@ import {
   Box,
   Divider,
   IconButton,
+  LinearProgress,
   TextField,
   Tooltip,
   Typography,
@@ -19,12 +20,6 @@ import {
 } from "../../../api/GoalsApi";
 import { Goal } from "../../../models/Goal";
 import CheckIcon from "@mui/icons-material/Check";
-import { DaysOfWeek } from "../../../models/Task";
-import { format } from "date-fns";
-import {
-  useCompleteTaskMutation,
-  useUnCompleteTaskMutation,
-} from "../../../api/TaskCompletionApi";
 import {
   useCompleteGoalMutation,
   useUnCompleteGoalMutation,
@@ -36,6 +31,15 @@ interface GoalRowProps {
 
 const GoalRow = ({ goal }: GoalRowProps) => {
   const isEditing = useMemo(() => goal?.id > 0, [goal]);
+  const currentGoalProgress = useMemo(
+    () =>
+      Math.round(
+        (goal?.subGoals?.filter((x) => x?.isCompleted).length /
+          goal?.subGoals?.length) *
+          100,
+      ),
+    [goal?.subGoals],
+  );
   const queryClient = useQueryClient();
   const saveGoal = useAddGoalMutation(queryClient);
   const editGoal = useEditGoalMutation(queryClient);
@@ -109,15 +113,28 @@ const GoalRow = ({ goal }: GoalRowProps) => {
             </IconButton>
           </span>
         </Tooltip>
-        <Tooltip title="Complete">
-          <IconButton
-            color={goal?.isCompleted ? "success" : "primary"}
-            size="small"
-            onClick={() => handleCompleteClick()}
-          >
-            <CheckIcon />
-          </IconButton>
-        </Tooltip>
+        {isEditing && (
+          <Tooltip title="Complete">
+            <IconButton
+              color={goal?.isCompleted ? "success" : "primary"}
+              size="small"
+              onClick={() => handleCompleteClick()}
+            >
+              <CheckIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+        <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
+          <Box sx={{ width: "100%", mr: 1 }}>
+            <LinearProgress variant="determinate" value={currentGoalProgress} />
+          </Box>
+          <Box sx={{ minWidth: 35 }}>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+            >{`${currentGoalProgress}%`}</Typography>
+          </Box>
+        </Box>
       </Box>
 
       <Box>
@@ -141,7 +158,7 @@ const GoalRow = ({ goal }: GoalRowProps) => {
         >
           {goal?.subGoals?.map((subGoal) => (
             <Box
-              key={subGoal.id}
+              key={subGoal?.id}
               sx={{ display: "flex", justifyContent: "flex-start", gap: 4 }}
             >
               <SubGoalColumn goalId={goal.id} subGoal={subGoal} />
