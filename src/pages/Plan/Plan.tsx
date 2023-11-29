@@ -3,7 +3,7 @@ import { CalendarContainer } from "./styles";
 import CalendarColumn from "components/molecules/CalendarColumn/CalendarColumn";
 import FloatingAddButton from "components/atoms/FloatingAddButton/FloatingAddButton";
 import { DaysOfWeek, Task } from "models/Task";
-import AddTaskModal from "./AddTaskModal/AddTaskModal";
+import AddTaskModal from "../../components/organisms/AddTaskModal/AddTaskModal";
 import { useGetTasksQuery } from "api/TasksApi";
 import PageLoader from "../../components/atoms/PageLoader/PageLoader";
 import { useGetTaskOrdersQuery } from "api/OrderApi";

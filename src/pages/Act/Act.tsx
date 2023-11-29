@@ -32,7 +32,7 @@ const Act = () => {
 
   const currentTaskData = useMemo(() => {
     return taskData
-      ?.filter((task) => {
+      ?.filter?.((task) => {
         let matchingTask: Task;
         task?.daysOfWeek?.forEach((day: string | number) => {
           const dayOfWeek = DaysOfWeek[day];
