@@ -38,6 +38,5 @@ export interface TaskBlock {
   taskId: number;
   totalBlocks: number;
   completedBlocks: number;
-  lastKnownDuration: number;
   dayOfWeek: DaysOfWeek[];
 }

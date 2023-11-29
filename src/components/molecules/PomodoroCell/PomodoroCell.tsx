@@ -8,6 +8,7 @@ interface PomodoroCellProps {
   blockType: "Break" | "Task";
   setIsCompleted: (b: boolean) => void;
   disabled?: boolean;
+  isBlockComplete: boolean;
 }
 
 const PomodoroCell = ({
@@ -15,6 +16,7 @@ const PomodoroCell = ({
   blockType,
   setIsCompleted,
   disabled,
+  isBlockComplete,
 }: PomodoroCellProps) => {
   const timerRef = useRef();
   const [progress, setProgress] = useState(0);
@@ -29,10 +31,11 @@ const PomodoroCell = ({
     [durationInMinutes],
   );
   const isCompleted = useMemo(() => {
+    if (isBlockComplete) return true;
     const completed = progress >= 100;
     setIsCompleted(completed);
     return completed;
-  }, [progress]);
+  }, [progress, isBlockComplete]);
 
   const countdownTimer = () => {
     // get the number of seconds that have elapsed since called

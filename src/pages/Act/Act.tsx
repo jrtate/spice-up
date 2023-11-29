@@ -112,7 +112,9 @@ const Act = () => {
                     <PomodoroTracker
                       task={task}
                       taskBlock={taskBlockData?.find(
-                        (block) => block.taskId === task.id,
+                        (block) =>
+                          block.taskId === task.id &&
+                          block.dayOfWeek === DaysOfWeek[currentDay],
                       )}
                       durationInMinutes={task.duration}
                     />

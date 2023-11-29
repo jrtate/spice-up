@@ -18,7 +18,7 @@ const PomodoroTracker = ({
 }: PomodoroTrackerProps) => {
   // todo: make these savable settings
   const pomodoroWorkBlockInMinutes = 15;
-  const pomodoroBreakBlockInMinutes = 10;
+  const pomodoroBreakBlockInMinutes = 1;
   const queryClient = useQueryClient();
   const upsertBlock = useUpdateTaskBlockMutation(queryClient);
   const [completedBlocks, setCompletedBlocks] = useState<number[]>([]);
@@ -29,28 +29,36 @@ const PomodoroTracker = ({
       Array(Math.floor(durationInMinutes / pomodoroWorkBlockInMinutes)).keys(),
     ).map((x) => x + 1);
   }, [durationInMinutes, pomodoroWorkBlockInMinutes]);
+  const totalBlockCount = useMemo(() => {
+    return fullDurationBlocks?.length + (remainderWorkBlock > 0 ? 1 : 0);
+  }, [fullDurationBlocks, remainderWorkBlock]);
 
   const handleBlockCompletion = (blockId: number) => {
-    setCompletedBlocks((prevState) => [...prevState, blockId]);
+    if (!taskBlock) return;
+    upsertBlock.mutate({
+      id: taskBlock.id,
+      taskId: taskBlock.taskId,
+      totalBlocks: taskBlock.totalBlocks,
+      completedBlocks: completedBlocks?.length + 1,
+      dayOfWeek: taskBlock.dayOfWeek,
+    });
   };
 
   useEffect(() => {
-    upsertBlock.mutate({
-      id: taskBlock?.id || undefined,
-      taskId: task?.id,
-      totalBlocks:
-        fullDurationBlocks?.length + (remainderWorkBlock > 0 ? 1 : 0),
-      completedBlocks: completedBlocks?.length,
-      lastKnownDuration: 0,
-      dayOfWeek: DaysOfWeek[currentDay],
-    });
-  }, [
-    taskBlock,
-    task,
-    fullDurationBlocks,
-    remainderWorkBlock,
-    completedBlocks,
-  ]);
+    setCompletedBlocks(Array.from(Array(taskBlock?.completedBlocks)));
+  }, [taskBlock?.completedBlocks]);
+
+  useEffect(() => {
+    // Initialize block if one isn't saved
+    if (!taskBlock?.id && task.id && currentDay && totalBlockCount)
+      upsertBlock.mutate({
+        id: undefined,
+        taskId: task.id,
+        totalBlocks: totalBlockCount,
+        completedBlocks: 0,
+        dayOfWeek: DaysOfWeek[currentDay],
+      });
+  }, [taskBlock, task, currentDay, totalBlockCount]);
 
   return (
     <>
@@ -60,14 +68,18 @@ const PomodoroTracker = ({
             key={blockId}
             taskDurationInMinutes={pomodoroWorkBlockInMinutes}
             breakDurationInMinutes={pomodoroBreakBlockInMinutes}
+            isBlockComplete={completedBlocks.includes(blockId)}
             setIsBlockCompleted={() => handleBlockCompletion(blockId)}
             disabled={index > completedBlocks.length}
           />
         );
       })}
       {remainderWorkBlock > 0 && (
-        // fullDurationBlocks.length === completedBlocks.length && (
         <PomodoroBlock
+          isBlockComplete={completedBlocks.length === totalBlockCount}
+          setIsBlockCompleted={() =>
+            handleBlockCompletion(completedBlocks.length + 1)
+          }
           taskDurationInMinutes={remainderWorkBlock}
           breakDurationInMinutes={pomodoroBreakBlockInMinutes}
           disabled={fullDurationBlocks.length !== completedBlocks.length}
