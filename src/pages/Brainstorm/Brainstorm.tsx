@@ -13,7 +13,7 @@ const Brainstorm = () => {
     <PageLoader />
   ) : (
     <Box p={1}>
-      {goals?.map((goal) => <GoalRow key={goal?.id} goal={goal} />)}
+      {goals?.map?.((goal) => <GoalRow key={goal?.id} goal={goal} />)}
 
       {!goals?.length ? (
         <GoalRow />

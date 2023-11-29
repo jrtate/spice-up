@@ -14,7 +14,7 @@ import { DaysOfWeek, Task } from "models/Task";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteTaskMutation } from "api/TasksApi";
 import { useToast } from "hooks/useToast";
-import EditTaskModal from "pages/Plan/EditTaskModal/EditTaskModal";
+import EditTaskModal from "components/organisms/EditTaskModal/EditTaskModal";
 import { format, formatDuration, intervalToDuration } from "date-fns";
 import {
   useCompleteTaskMutation,

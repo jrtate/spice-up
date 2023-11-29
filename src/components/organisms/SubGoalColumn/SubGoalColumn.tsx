@@ -1,6 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Box, Button, IconButton, TextField, Tooltip } from "@mui/material";
-import AddTaskModal from "../../../pages/Plan/AddTaskModal/AddTaskModal";
+import {
+  Box,
+  Button,
+  IconButton,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import AddTaskModal from "../AddTaskModal/AddTaskModal";
 import AddIcon from "@mui/icons-material/Add";
 import { SubGoal } from "../../../models/Goal";
 import EditIcon from "@mui/icons-material/Edit";
@@ -12,6 +19,12 @@ import {
   useDeleteSubGoalMutation,
 } from "../../../api/SubGoalsApi";
 import TaskCard from "../../molecules/TaskCard/TaskCard";
+import CheckIcon from "@mui/icons-material/Check";
+import {
+  useCompleteSubGoalMutation,
+  useUnCompleteSubGoalMutation,
+} from "../../../api/SubGoalCompletionApi";
+import SaveIcon from "@mui/icons-material/Save";
 
 interface GoalColumnProps {
   goalId?: number;
@@ -19,17 +32,28 @@ interface GoalColumnProps {
 }
 
 const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
-  const isEditing = useMemo(() => subGoal?.id > 0, [subGoal]);
+  const isSubGoalCreated = useMemo(() => subGoal?.id > 0, [subGoal]);
   const queryClient = useQueryClient();
   const saveSubGoal = useAddSubGoalMutation(queryClient);
   const editSubGoal = useEditSubGoalMutation(queryClient);
   const deleteSubGoal = useDeleteSubGoalMutation(queryClient);
+  const completeSubGoal = useCompleteSubGoalMutation(queryClient);
+  const unCompleteSubGoal = useUnCompleteSubGoalMutation(queryClient);
   const [showAddTaskModal, setShowAddTaskModal] = useState<boolean>(false);
   const [description, setDescription] = useState<string>("");
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   useEffect(() => {
-    if (isEditing) setDescription(subGoal?.description);
+    if (isSubGoalCreated) setDescription(subGoal?.description);
   }, [subGoal]);
+
+  const handleCompleteClick = () => {
+    if (!subGoal?.isCompleted) {
+      completeSubGoal.mutate(subGoal?.id);
+    } else if (subGoal?.isCompleted) {
+      unCompleteSubGoal.mutate(subGoal?.id);
+    }
+  };
 
   return (
     <Box
@@ -44,49 +68,72 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "flex-start",
+          width: "100%",
+          marginBottom: 1,
         }}
       >
-        <TextField
-          sx={{ marginBottom: 4 }}
-          variant={"standard"}
-          label="Sub-goal"
-          value={description}
-          onChange={(e) => {
-            setDescription(e.target.value);
-          }}
-        />
-        {isEditing ? (
+        {!isEditing && isSubGoalCreated && (
+          <Typography sx={{ marginRight: 1 }} variant="subtitle1" gutterBottom>
+            {description}
+          </Typography>
+        )}
+        {(isEditing || !isSubGoalCreated) && (
+          <TextField
+            sx={{ marginRight: 1 }}
+            variant={"standard"}
+            label="Sub-goal"
+            value={description}
+            onChange={(e) => {
+              setDescription(e.target.value);
+            }}
+          />
+        )}
+        {isSubGoalCreated && !isEditing ? (
           <Tooltip title="Edit Sub-goal">
-            <IconButton
-              onClick={() =>
-                editSubGoal.mutate({ id: subGoal?.id, description })
-              }
-            >
+            <IconButton onClick={() => setIsEditing(true)}>
               <EditIcon />
             </IconButton>
           </Tooltip>
         ) : (
-          <Tooltip title="Create Sub-goal">
+          <Tooltip title="Save Sub-goal">
             <IconButton
               onClick={() => {
-                saveSubGoal.mutate({ goalId, description });
+                if (isSubGoalCreated) {
+                  editSubGoal.mutate({ id: subGoal?.id, description });
+                } else {
+                  saveSubGoal.mutate({ goalId, description });
+                }
                 setDescription("");
+                setIsEditing(false);
               }}
             >
-              <AddIcon />
+              <SaveIcon />
             </IconButton>
           </Tooltip>
         )}
-        <Tooltip title="Delete Sub-goal">
-          <span>
+        {isSubGoalCreated && !isEditing && (
+          <Tooltip title="Delete Sub-goal">
+            <span>
+              <IconButton
+                disabled={!isSubGoalCreated}
+                onClick={() => deleteSubGoal.mutate(subGoal?.id)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
+        )}
+        {isSubGoalCreated && !isEditing && (
+          <Tooltip title="Complete">
             <IconButton
-              disabled={!isEditing}
-              onClick={() => deleteSubGoal.mutate(subGoal?.id)}
+              color={subGoal?.isCompleted ? "success" : "primary"}
+              size="small"
+              onClick={() => handleCompleteClick()}
             >
-              <DeleteIcon />
+              <CheckIcon />
             </IconButton>
-          </span>
-        </Tooltip>
+          </Tooltip>
+        )}
       </Box>
 
       {subGoal?.tasks?.map((task) => (
@@ -95,13 +142,16 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
         </Box>
       ))}
 
-      <Button
-        variant="outlined"
-        startIcon={<AddIcon />}
-        onClick={() => setShowAddTaskModal(true)}
-      >
-        Add Task
-      </Button>
+      {isSubGoalCreated && (
+        <Button
+          sx={{ marginTop: "1rem" }}
+          variant="outlined"
+          startIcon={<AddIcon />}
+          onClick={() => setShowAddTaskModal(true)}
+        >
+          Add Task
+        </Button>
+      )}
       <AddTaskModal
         show={showAddTaskModal}
         closeModal={() => setShowAddTaskModal(false)}

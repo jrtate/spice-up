@@ -11,9 +11,9 @@ import { Task } from "../../../models/Task";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteTaskMutation } from "../../../api/TasksApi";
 import { useToast } from "hooks/useToast";
-import EditTaskModal from "pages/Plan/EditTaskModal/EditTaskModal";
+import EditTaskModal from "components/organisms/EditTaskModal/EditTaskModal";
 import { formatDuration, intervalToDuration } from "date-fns";
-import { useGetCompletionCount } from "../../../api/TaskCompletionApi";
+import { useGetTaskCompletionCount } from "../../../api/TaskCompletionApi";
 
 interface TaskDisplayCardProps {
   task: Task;
@@ -29,7 +29,7 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
       ),
     [task.duration],
   );
-  const { data: taskCompletions } = useGetCompletionCount(task.id);
+  const { data: taskCompletions } = useGetTaskCompletionCount(task.id);
   const [showEditTaskModal, setShowEditTaskModal] = useState<boolean>(false);
   const deleteTask = useDeleteTaskMutation(queryClient);
   const { handleSetShowToast } = useToast();
@@ -63,7 +63,7 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
           >
             Duration: {duration}.
           </Typography>
-          {showCompletionStats && (
+          {showCompletionStats && task?.isRecurring && (
             <Typography mt={1} variant={"body1"} color="text.secondary">
               Number of times completed: {taskCompletions || 0}
             </Typography>
