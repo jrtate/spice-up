@@ -7,12 +7,14 @@ interface PomodoroCellProps {
   durationInMinutes: number;
   blockType: "Break" | "Task";
   setIsCompleted: (b: boolean) => void;
+  disabled?: boolean;
 }
 
 const PomodoroCell = ({
   durationInMinutes,
   blockType,
   setIsCompleted,
+  disabled,
 }: PomodoroCellProps) => {
   const timerRef = useRef();
   const [progress, setProgress] = useState(0);
@@ -83,9 +85,10 @@ const PomodoroCell = ({
   }, [startTime, progress, timerRef.current]);
 
   return (
-    <Box sx={{ display: "flex", width: "100%", alignItems: "center" }}>
+    <Box sx={{ display: "flex", alignItems: "center" }}>
       <IconButton
-        color="primary"
+        disabled={disabled}
+        color={isCompleted ? "success" : "primary"}
         onClick={() => {
           setStartTime(Date.now());
         }}
@@ -101,7 +104,8 @@ const PomodoroCell = ({
         }}
       >
         <LinearProgress
-          sx={{ minWidth: 150 }}
+          color={isCompleted ? "success" : "primary"}
+          sx={{ minWidth: 150, backgroundColor: disabled ? "#5a5a5a" : "" }}
           variant="determinate"
           value={progress}
         />

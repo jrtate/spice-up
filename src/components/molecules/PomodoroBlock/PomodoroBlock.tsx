@@ -5,12 +5,14 @@ interface PomodoroBlockProps {
   taskDurationInMinutes: number;
   breakDurationInMinutes: number;
   setIsBlockCompleted?: () => void;
+  disabled?: boolean;
 }
 
 const PomodoroBlock = ({
   taskDurationInMinutes,
   breakDurationInMinutes,
   setIsBlockCompleted,
+  disabled,
 }: PomodoroBlockProps) => {
   const [isTaskBlockComplete, setIsTaskBlockComplete] =
     useState<boolean>(false);
@@ -24,17 +26,17 @@ const PomodoroBlock = ({
   return (
     <>
       <PomodoroCell
+        disabled={disabled}
         durationInMinutes={taskDurationInMinutes}
         blockType={"Task"}
         setIsCompleted={setIsTaskBlockComplete}
       />
-      {isTaskBlockComplete && (
-        <PomodoroCell
-          durationInMinutes={breakDurationInMinutes}
-          blockType={"Break"}
-          setIsCompleted={setIsBreakBlockComplete}
-        />
-      )}
+      <PomodoroCell
+        disabled={!isTaskBlockComplete || disabled}
+        durationInMinutes={breakDurationInMinutes}
+        blockType={"Break"}
+        setIsCompleted={setIsBreakBlockComplete}
+      />
     </>
   );
 };

@@ -32,3 +32,12 @@ export interface TaskOrder {
   order: number;
   dayOfWeek: number;
 }
+
+export interface TaskBlock {
+  id?: number;
+  taskId: number;
+  totalBlocks: number;
+  completedBlocks: number;
+  lastKnownDuration: number;
+  dayOfWeek: DaysOfWeek[];
+}
