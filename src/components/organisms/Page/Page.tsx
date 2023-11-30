@@ -1,16 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Box, Drawer, IconButton, Paper, Tooltip } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import LogoutIcon from "@mui/icons-material/Logout";
 import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { PageContainer } from "./styles";
-import axios from "axios";
+import SettingsModal from "../SettingsModal/SettingsModal";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  useGetSettingsQuery,
+  useUpdateSettingsMutation,
+} from "../../../api/SettingsApi";
 
 const Page = ({ children }: any) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { data: settingsData, isLoading: isSettingsDataLoading } =
+    useGetSettingsQuery();
+  const updateSettings = useUpdateSettingsMutation(queryClient);
   const [path, setPath] = useState<string>(window.location.pathname);
+  const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
   const drawerWidth = 48;
 
   const handleLogout = () => {
@@ -20,8 +32,17 @@ const Page = ({ children }: any) => {
     navigate("/login");
   };
 
+  useEffect(() => {
+    if (!settingsData?.id && !isSettingsDataLoading)
+      updateSettings.mutate({ workBlockDuration: 25, breakBlockDuration: 5 });
+  }, [settingsData, isSettingsDataLoading]);
+
   return (
     <PageContainer>
+      <SettingsModal
+        show={showSettingsModal}
+        closeModal={() => setShowSettingsModal(false)}
+      />
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
@@ -96,9 +117,19 @@ const Page = ({ children }: any) => {
               mb={2}
               sx={{
                 display: "flex",
-                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+                gap: 1,
               }}
             >
+              <Tooltip title="Settings" placement="right">
+                <IconButton
+                  color="primary"
+                  onClick={() => setShowSettingsModal(true)}
+                >
+                  <SettingsIcon />
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Logout" placement="right">
                 <IconButton color="primary" onClick={() => handleLogout()}>
                   <LogoutIcon />

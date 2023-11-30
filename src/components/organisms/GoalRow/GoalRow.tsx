@@ -19,7 +19,6 @@ import {
   useEditGoalMutation,
 } from "../../../api/GoalsApi";
 import { Goal } from "../../../models/Goal";
-import CheckIcon from "@mui/icons-material/Check";
 import {
   useCompleteGoalMutation,
   useUnCompleteGoalMutation,
@@ -91,7 +90,13 @@ const GoalRow = ({ goal }: GoalRowProps) => {
         }}
       >
         {!isEditing && isGoalCreated && (
-          <Typography sx={{ marginRight: 1 }} variant="h6">
+          <Typography
+            sx={{
+              marginRight: 1,
+              textDecoration: goal?.isCompleted ? "line-through" : "none",
+            }}
+            variant="h6"
+          >
             {description}
           </Typography>
         )}

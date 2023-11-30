@@ -12,11 +12,15 @@ import {
 } from "../../api/OrderApi";
 import { useQueryClient } from "@tanstack/react-query";
 import PomodoroTracker from "components/organisms/PomodoroTracker/PomodoroTracker";
+import { useGetTaskBlocksQuery } from "../../api/TaskBlockApi";
 
 const Act = () => {
   const [currentTaskList, setCurrentTaskList] = useState<Task[]>([]);
   const { isLoading, data: taskData } = useGetTasksQuery();
-  const { data: taskOrderData } = useGetTaskOrdersQuery();
+  const { data: taskOrderData, isLoading: isTaskOrderDataLoading } =
+    useGetTaskOrdersQuery();
+  const { data: taskBlockData, isLoading: isTaskBlockDataLoading } =
+    useGetTaskBlocksQuery();
   const queryClient = useQueryClient();
   const updateTaskOrder = useUpdateTaskSortOrderMutation(queryClient);
   const currentDay = format(new Date(), "eeee");
@@ -75,7 +79,7 @@ const Act = () => {
 
   return (
     <Box p={1} sx={{ width: "100%", height: "100%" }}>
-      {isLoading ? (
+      {isLoading || isTaskBlockDataLoading || isTaskOrderDataLoading ? (
         <PageLoader />
       ) : (
         <Box m={3}>
@@ -102,11 +106,20 @@ const Act = () => {
                     width: "100%",
                     height: "fit-content",
                     alignItems: "center",
+                    justifyContent: "flex-start",
                   }}
                 >
                   <CurrentCard task={task} />
                   {!!task.duration && (
-                    <PomodoroTracker durationInMinutes={task.duration} />
+                    <PomodoroTracker
+                      task={task}
+                      taskBlock={taskBlockData?.find(
+                        (block) =>
+                          block.taskId === task.id &&
+                          block.dayOfWeek === DaysOfWeek[currentDay],
+                      )}
+                      durationInMinutes={task.duration}
+                    />
                   )}
                 </Box>
               ))}
