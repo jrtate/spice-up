@@ -1,5 +1,10 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
-import { Box, IconButton, LinearProgress } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  LinearProgress,
+  CircularProgress,
+} from "@mui/material";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
@@ -21,14 +26,14 @@ const PomodoroCell = ({
   const timerRef = useRef();
   const [progress, setProgress] = useState(0);
   const [startTime, setStartTime] = useState<number>(0);
-  const [countdown, setCountdown] = useState<string>(
+  const [countdownDisplay, setCountdownDisplay] = useState<string>(
     `${
       durationInMinutes < 10 ? "0" + durationInMinutes : durationInMinutes
     }:00`,
   );
 
   useEffect(() => {
-    setCountdown(
+    setCountdownDisplay(
       `${
         durationInMinutes < 10 ? "0" + durationInMinutes : durationInMinutes
       }:00`,
@@ -57,7 +62,7 @@ const PomodoroCell = ({
     minutes = minutes < 10 ? "0" + minutes : minutes;
     seconds = seconds < 10 ? "0" + seconds : seconds;
 
-    setCountdown(`${minutes}:${seconds}`);
+    setCountdownDisplay(`${minutes}:${seconds}`);
 
     if (diff <= 0) {
       // add one second so that the count-down starts at the full duration
@@ -103,10 +108,16 @@ const PomodoroCell = ({
         size={"large"}
         color={isCompleted ? "success" : "primary"}
         onClick={() => {
-          setStartTime(Date.now());
+          if (!startTime) setStartTime(Date.now());
         }}
       >
-        {isCompleted ? <CheckCircleIcon /> : <PlayCircleIcon />}
+        {isCompleted ? (
+          <CheckCircleIcon />
+        ) : timerRef.current ? (
+          <CircularProgress size={"1.5rem"} />
+        ) : (
+          <PlayCircleIcon />
+        )}
       </IconButton>
       <Box
         mt={3}
@@ -126,7 +137,7 @@ const PomodoroCell = ({
           variant="determinate"
           value={isCompleted ? 100 : progress}
         />
-        {`${blockType} Cycle - ${isCompleted ? "00:00" : countdown}`}
+        {`${blockType} Cycle - ${isCompleted ? "00:00" : countdownDisplay}`}
       </Box>
     </Box>
   );
