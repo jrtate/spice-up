@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { Box, IconButton, LinearProgress } from "@mui/material";
-import NotStartedIcon from "@mui/icons-material/NotStarted";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 interface PomodoroCellProps {
@@ -91,12 +91,13 @@ const PomodoroCell = ({
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <IconButton
         disabled={disabled}
+        size={"large"}
         color={isCompleted ? "success" : "primary"}
         onClick={() => {
           setStartTime(Date.now());
         }}
       >
-        {isCompleted ? <CheckCircleIcon /> : <NotStartedIcon />}
+        {isCompleted ? <CheckCircleIcon /> : <PlayCircleIcon />}
       </IconButton>
       <Box
         mt={3}
@@ -108,11 +109,15 @@ const PomodoroCell = ({
       >
         <LinearProgress
           color={isCompleted ? "success" : "primary"}
-          sx={{ minWidth: 150, backgroundColor: disabled ? "#5a5a5a" : "" }}
+          sx={{
+            minWidth: 150,
+            backgroundColor: disabled ? "#5a5a5a" : "",
+            height: ".25rem",
+          }}
           variant="determinate"
-          value={progress}
+          value={isCompleted ? 100 : progress}
         />
-        {`${blockType} Cycle - ${countdown}`}
+        {`${blockType} Cycle - ${isCompleted ? "00:00" : countdown}`}
       </Box>
     </Box>
   );
