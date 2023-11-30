@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PomodoroCell from "../PomodoroCell/PomodoroCell";
+import { TaskBlock } from "../../../models/Task";
 
 interface PomodoroBlockProps {
   taskDurationInMinutes: number;
@@ -7,6 +8,7 @@ interface PomodoroBlockProps {
   isBlockComplete: boolean;
   setIsBlockCompleted: () => void;
   disabled?: boolean;
+  taskBlock: TaskBlock;
 }
 
 const PomodoroBlock = ({
@@ -15,6 +17,7 @@ const PomodoroBlock = ({
   isBlockComplete,
   setIsBlockCompleted,
   disabled,
+  taskBlock,
 }: PomodoroBlockProps) => {
   const [isTaskBlockComplete, setIsTaskBlockComplete] =
     useState<boolean>(false);
@@ -33,6 +36,7 @@ const PomodoroBlock = ({
         blockType={"Task"}
         setIsCompleted={setIsTaskBlockComplete}
         isBlockComplete={isBlockComplete}
+        taskBlock={taskBlock}
       />
       <PomodoroCell
         disabled={(!isTaskBlockComplete || disabled) && !isBlockComplete}
@@ -40,6 +44,7 @@ const PomodoroBlock = ({
         blockType={"Break"}
         setIsCompleted={setIsBreakBlockComplete}
         isBlockComplete={isBlockComplete}
+        taskBlock={taskBlock}
       />
     </>
   );

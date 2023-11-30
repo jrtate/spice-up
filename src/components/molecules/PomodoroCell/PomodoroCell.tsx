@@ -4,6 +4,7 @@ import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useTimer } from "react-timer-hook";
 import { PauseCircle } from "@mui/icons-material";
+import { TaskBlock } from "../../../models/Task";
 
 interface PomodoroCellProps {
   durationInMinutes: number;
@@ -11,6 +12,7 @@ interface PomodoroCellProps {
   setIsCompleted: (b: boolean) => void;
   disabled?: boolean;
   isBlockComplete: boolean;
+  taskBlock: TaskBlock;
 }
 
 const PomodoroCell = ({
@@ -19,13 +21,14 @@ const PomodoroCell = ({
   setIsCompleted,
   disabled,
   isBlockComplete,
+  taskBlock,
 }: PomodoroCellProps) => {
   const [timerWasStarted, setTimerWasStarted] = useState<boolean>(false);
   const expirationInSeconds = useMemo(() => {
     const time = new Date();
     time.setSeconds(time.getSeconds() + durationInMinutes * 60);
     return time;
-  }, [durationInMinutes]);
+  }, [durationInMinutes, taskBlock]);
 
   const {
     totalSeconds,
@@ -39,12 +42,14 @@ const PomodoroCell = ({
   } = useTimer({
     autoStart: false,
     expiryTimestamp: expirationInSeconds,
-    onExpire: () => setIsCompleted(true),
+    onExpire: () => {
+      setIsCompleted(true);
+    },
   });
 
   useEffect(() => {
-    if (isBlockComplete) setIsCompleted(true);
-  }, [isBlockComplete]);
+    restart(expirationInSeconds, false);
+  }, [taskBlock]);
 
   const isCompleted = useMemo(() => {
     if (isBlockComplete) return true;

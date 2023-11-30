@@ -100,6 +100,7 @@ const PomodoroTracker = ({
               isBlockComplete={taskBlock?.completedBlocks >= blockId}
               setIsBlockCompleted={() => handleBlockCompletion()}
               disabled={index > taskBlock?.completedBlocks}
+              taskBlock={taskBlock}
             />
           );
         })}
@@ -110,6 +111,7 @@ const PomodoroTracker = ({
             taskDurationInMinutes={remainderWorkBlock}
             breakDurationInMinutes={breakBlockDuration}
             disabled={fullDurationBlocks.length !== taskBlock?.completedBlocks}
+            taskBlock={taskBlock}
           />
         )}
       </Box>
