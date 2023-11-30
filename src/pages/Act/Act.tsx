@@ -17,8 +17,10 @@ import { useGetTaskBlocksQuery } from "../../api/TaskBlockApi";
 const Act = () => {
   const [currentTaskList, setCurrentTaskList] = useState<Task[]>([]);
   const { isLoading, data: taskData } = useGetTasksQuery();
-  const { data: taskOrderData } = useGetTaskOrdersQuery();
-  const { data: taskBlockData } = useGetTaskBlocksQuery();
+  const { data: taskOrderData, isLoading: isTaskOrderDataLoading } =
+    useGetTaskOrdersQuery();
+  const { data: taskBlockData, isLoading: isTaskBlockDataLoading } =
+    useGetTaskBlocksQuery();
   const queryClient = useQueryClient();
   const updateTaskOrder = useUpdateTaskSortOrderMutation(queryClient);
   const currentDay = format(new Date(), "eeee");
@@ -77,7 +79,7 @@ const Act = () => {
 
   return (
     <Box p={1} sx={{ width: "100%", height: "100%" }}>
-      {isLoading ? (
+      {isLoading || isTaskBlockDataLoading || isTaskOrderDataLoading ? (
         <PageLoader />
       ) : (
         <Box m={3}>
