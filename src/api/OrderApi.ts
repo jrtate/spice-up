@@ -21,6 +21,7 @@ export const useUpdateTaskSortOrderMutation = (queryClient: QueryClient) =>
       axios.put(`${process.env.REACT_APP_BASE_URL}${BASE_URL}`, taskOrder),
     onSuccess: () => {
       // Invalidate and re-fetch
-      queryClient.invalidateQueries({ queryKey: ["tasks", "taskOrders"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["taskOrders"] });
     },
   });

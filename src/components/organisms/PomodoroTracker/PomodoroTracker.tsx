@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import ReplayIcon from "@mui/icons-material/Replay";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import { Box, IconButton, Tooltip } from "@mui/material";
+import { useGetSettingsQuery } from "../../../api/SettingsApi";
 
 interface PomodoroTrackerProps {
   taskBlock: TaskBlock;
@@ -19,18 +20,22 @@ const PomodoroTracker = ({
   taskBlock,
   durationInMinutes,
 }: PomodoroTrackerProps) => {
-  // todo: make these savable settings
-  const pomodoroWorkBlockInMinutes = 15;
-  const pomodoroBreakBlockInMinutes = 1;
+  const {
+    data: { workBlockDuration, breakBlockDuration },
+  } = useGetSettingsQuery();
+
   const queryClient = useQueryClient();
   const upsertBlock = useUpdateTaskBlockMutation(queryClient);
-  const remainderWorkBlock = durationInMinutes % pomodoroWorkBlockInMinutes;
+  const remainderWorkBlock = useMemo(
+    () => durationInMinutes % workBlockDuration,
+    [workBlockDuration, durationInMinutes],
+  );
   const currentDay = format(new Date(), "eeee");
   const fullDurationBlocks = useMemo(() => {
     return Array.from(
-      Array(Math.floor(durationInMinutes / pomodoroWorkBlockInMinutes)).keys(),
+      Array(Math.floor(durationInMinutes / workBlockDuration)).keys(),
     ).map((x) => x + 1);
-  }, [durationInMinutes, pomodoroWorkBlockInMinutes]);
+  }, [durationInMinutes, workBlockDuration]);
   const totalBlockCount = useMemo(() => {
     return fullDurationBlocks?.length + (remainderWorkBlock > 0 ? 1 : 0);
   }, [fullDurationBlocks, remainderWorkBlock]);
@@ -90,8 +95,8 @@ const PomodoroTracker = ({
           return (
             <PomodoroBlock
               key={blockId}
-              taskDurationInMinutes={pomodoroWorkBlockInMinutes}
-              breakDurationInMinutes={pomodoroBreakBlockInMinutes}
+              taskDurationInMinutes={workBlockDuration}
+              breakDurationInMinutes={breakBlockDuration}
               isBlockComplete={taskBlock?.completedBlocks >= blockId}
               setIsBlockCompleted={() => handleBlockCompletion()}
               disabled={index > taskBlock?.completedBlocks}
@@ -103,7 +108,7 @@ const PomodoroTracker = ({
             isBlockComplete={taskBlock?.completedBlocks === totalBlockCount}
             setIsBlockCompleted={() => handleBlockCompletion()}
             taskDurationInMinutes={remainderWorkBlock}
-            breakDurationInMinutes={pomodoroBreakBlockInMinutes}
+            breakDurationInMinutes={breakBlockDuration}
             disabled={fullDurationBlocks.length !== taskBlock?.completedBlocks}
           />
         )}

@@ -26,6 +26,15 @@ const PomodoroCell = ({
       durationInMinutes < 10 ? "0" + durationInMinutes : durationInMinutes
     }:00`,
   );
+
+  useEffect(() => {
+    setCountdown(
+      `${
+        durationInMinutes < 10 ? "0" + durationInMinutes : durationInMinutes
+      }:00`,
+    );
+  }, [durationInMinutes]);
+
   const durationToMs = useMemo(
     () => durationInMinutes * 1000 * 60,
     [durationInMinutes],
