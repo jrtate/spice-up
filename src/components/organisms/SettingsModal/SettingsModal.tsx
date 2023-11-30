@@ -73,7 +73,7 @@ const SettingsModal = ({ show, closeModal }: SettingsModalProps) => {
 
         <Box sx={{ display: "flex", justifyContent: "flex-end" }} mt={3}>
           <LoadingButton
-            loading={updateSettings.isPending}
+            loading={updateSettings.isPending || isSettingsDataLoading}
             onClick={() => handleSaveTask()}
             disabled={!workBlockDuration || !breakBlockDuration}
           >

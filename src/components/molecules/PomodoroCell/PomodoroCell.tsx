@@ -1,12 +1,9 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
-import {
-  Box,
-  IconButton,
-  LinearProgress,
-  CircularProgress,
-} from "@mui/material";
+import React, { useEffect, useState, useMemo } from "react";
+import { Box, IconButton, LinearProgress } from "@mui/material";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { useTimer } from "react-timer-hook";
+import { PauseCircle } from "@mui/icons-material";
 
 interface PomodoroCellProps {
   durationInMinutes: number;
@@ -23,83 +20,47 @@ const PomodoroCell = ({
   disabled,
   isBlockComplete,
 }: PomodoroCellProps) => {
-  const timerRef = useRef();
-  const [progress, setProgress] = useState(0);
-  const [startTime, setStartTime] = useState<number>(0);
-  const [countdownDisplay, setCountdownDisplay] = useState<string>(
-    `${
-      durationInMinutes < 10 ? "0" + durationInMinutes : durationInMinutes
-    }:00`,
-  );
-
-  useEffect(() => {
-    setCountdownDisplay(
-      `${
-        durationInMinutes < 10 ? "0" + durationInMinutes : durationInMinutes
-      }:00`,
-    );
+  const [timerWasStarted, setTimerWasStarted] = useState<boolean>(false);
+  const expirationInSeconds = useMemo(() => {
+    const time = new Date();
+    time.setSeconds(time.getSeconds() + durationInMinutes * 60);
+    return time;
   }, [durationInMinutes]);
 
-  const durationToMs = useMemo(
-    () => durationInMinutes * 1000 * 60,
-    [durationInMinutes],
-  );
+  const {
+    totalSeconds,
+    seconds,
+    minutes,
+    isRunning,
+    start,
+    pause,
+    resume,
+    restart,
+  } = useTimer({
+    autoStart: false,
+    expiryTimestamp: expirationInSeconds,
+    onExpire: () => setIsCompleted(true),
+  });
+
+  useEffect(() => {
+    if (isBlockComplete) setIsCompleted(true);
+  }, [isBlockComplete]);
+
   const isCompleted = useMemo(() => {
     if (isBlockComplete) return true;
-    const completed = progress >= 100;
-    setIsCompleted(completed);
-    return completed;
-  }, [progress, isBlockComplete]);
+    return minutes + seconds === 0;
+  }, [isBlockComplete]);
 
-  const countdownTimer = () => {
-    // get the number of seconds that have elapsed since called
-    const diff =
-      durationInMinutes * 60 - (((Date.now() - startTime) / 1000) | 0);
-
-    let minutes: string | number = (diff / 60) | 0;
-    let seconds: string | number = diff % 60 | 0;
-
-    minutes = minutes < 10 ? "0" + minutes : minutes;
-    seconds = seconds < 10 ? "0" + seconds : seconds;
-
-    setCountdownDisplay(`${minutes}:${seconds}`);
-
-    if (diff <= 0) {
-      // add one second so that the count-down starts at the full duration
-      // example 05:00 not 04:59
-      setStartTime(Date.now() + 1000);
+  const handleToggleTimer = () => {
+    if (!isRunning && !timerWasStarted) {
+      start();
+      setTimerWasStarted(true);
+    } else if (isRunning) {
+      pause();
+    } else if (timerWasStarted) {
+      resume();
     }
   };
-
-  const startTimer = () => {
-    countdownTimer();
-    if (!timerRef.current) {
-      // @ts-ignore
-      timerRef.current = setInterval(() => {
-        if (!startTime) return;
-        countdownTimer();
-        setProgress(() => {
-          const diff = (Date.now() - startTime) / durationToMs;
-          return Math.min(diff * 100, 100);
-        });
-      }, 1000);
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      clearInterval(timerRef.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (startTime === 0 || progress >= 100) {
-      clearInterval(timerRef.current);
-      return;
-    }
-
-    startTimer();
-  }, [startTime, progress, timerRef.current]);
 
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -107,14 +68,12 @@ const PomodoroCell = ({
         disabled={disabled}
         size={"large"}
         color={isCompleted ? "success" : "primary"}
-        onClick={() => {
-          if (!startTime) setStartTime(Date.now());
-        }}
+        onClick={() => handleToggleTimer()}
       >
         {isCompleted ? (
           <CheckCircleIcon />
-        ) : timerRef.current ? (
-          <CircularProgress size={"1.5rem"} />
+        ) : isRunning ? (
+          <PauseCircle />
         ) : (
           <PlayCircleIcon />
         )}
@@ -135,9 +94,24 @@ const PomodoroCell = ({
             height: ".25rem",
           }}
           variant="determinate"
-          value={isCompleted ? 100 : progress}
+          value={
+            isCompleted
+              ? 100
+              : Math.min(
+                  ((durationInMinutes * 60 - totalSeconds) /
+                    (durationInMinutes * 60)) *
+                    100,
+                  100,
+                )
+          }
         />
-        {`${blockType} Cycle - ${isCompleted ? "00:00" : countdownDisplay}`}
+        {`${blockType} Cycle - ${
+          isCompleted
+            ? "00:00"
+            : `${minutes < 10 ? `0${minutes}` : minutes}:${
+                seconds < 10 ? `0${seconds}` : seconds
+              }`
+        }`}
       </Box>
     </Box>
   );

@@ -17,6 +17,7 @@
     "react-router-dom": "^6.18.0",
     "react-scripts": "5.0.1",
     "react-sortablejs": "^6.1.4",
+    "react-timer-hook": "^3.0.7",
     "sortablejs": "^1.15.0",
     "typescript": "^4.9.5"
   },
