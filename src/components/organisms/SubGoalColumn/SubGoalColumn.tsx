@@ -97,7 +97,6 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
               textDecoration: subGoal?.isCompleted ? "line-through" : "none",
             }}
             variant="subtitle1"
-            gutterBottom
           >
             {description}
           </Typography>
