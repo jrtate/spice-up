@@ -21,7 +21,7 @@ const Login = () => {
       }}
     >
       <LoginContainer padding={3}>
-        <Typography sx={{ mb: 2 }} variant="h6">
+        <Typography sx={{ mb: 3 }} variant="h6">
           Login
         </Typography>
 
@@ -46,7 +46,13 @@ const Login = () => {
           fullWidth
         />
 
-        <Box sx={{ display: "flex", justifyContent: "space-between" }} mt={3}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+          mt={10}
+        >
           <Link to="/signup">
             <Button onClick={() => {}}>New User? Sign up here!</Button>
           </Link>

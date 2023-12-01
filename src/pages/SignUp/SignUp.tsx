@@ -20,7 +20,7 @@ const SignUp = () => {
       }}
     >
       <SignUpContainer padding={3}>
-        <Typography sx={{ mb: 2 }} variant="h6">
+        <Typography sx={{ mb: 3 }} variant="h6">
           Sign Up
         </Typography>
 
@@ -45,7 +45,13 @@ const SignUp = () => {
           fullWidth
         />
 
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }} mt={3}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+          mt={10}
+        >
           <Link to="/login">
             <Button onClick={() => {}}>Back</Button>
           </Link>
