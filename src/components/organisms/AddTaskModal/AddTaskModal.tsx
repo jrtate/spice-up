@@ -24,7 +24,7 @@ const AddTaskModal = ({ show, closeModal, subGoalId }: AddTaskModalProps) => {
 
   const handleModalClose = () => {
     setDescription("");
-    setDuration(null);
+    setDuration(15);
     setIsRecurring(true);
     setIsRandom(false);
     setCheckedDays([]);

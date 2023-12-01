@@ -49,10 +49,7 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
         bodyText={`${task?.description}`}
         show={showDeleteModal}
         closeModal={() => setShowDeleteModal(false)}
-        handleConfirmClick={() => {
-          deleteTask.mutate(task?.id);
-          handleSetShowToast("The task has been deleted.");
-        }}
+        handleConfirmClick={() => handleDeleteTask()}
         confirmButtonText={"Delete Task"}
       />
       <EditTaskModal
