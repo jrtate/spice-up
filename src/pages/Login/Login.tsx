@@ -26,6 +26,7 @@ const Login = () => {
         </Typography>
 
         <TextField
+          autoFocus
           label="Email"
           variant="standard"
           value={email}
