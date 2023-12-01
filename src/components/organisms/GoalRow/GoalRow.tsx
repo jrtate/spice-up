@@ -11,6 +11,7 @@ import {
 import SaveIcon from "@mui/icons-material/Save";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ClearIcon from "@mui/icons-material/Clear";
 import SubGoalColumn from "../SubGoalColumn/SubGoalColumn";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -23,6 +24,8 @@ import {
   useCompleteGoalMutation,
   useUnCompleteGoalMutation,
 } from "../../../api/GoalCompletionApi";
+import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
+import { useToast } from "../../../hooks/useToast";
 
 interface GoalRowProps {
   goal?: Goal;
@@ -47,6 +50,8 @@ const GoalRow = ({ goal }: GoalRowProps) => {
   const unCompleteGoal = useUnCompleteGoalMutation(queryClient);
   const [description, setDescription] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const { handleSetShowToast } = useToast();
 
   useEffect(() => {
     setDescription(goal?.description);
@@ -74,6 +79,19 @@ const GoalRow = ({ goal }: GoalRowProps) => {
         alignItems: "flex-start",
       }}
     >
+      <ConfirmationModal
+        isLoading={deleteGoal.isPending}
+        headerText={`Are you sure you want to delete the following goal?`}
+        bodyText={`${goal?.description}`}
+        show={showDeleteModal}
+        closeModal={() => setShowDeleteModal(false)}
+        handleConfirmClick={() => {
+          deleteGoal.mutate(goal?.id);
+          handleSetShowToast("The goal has been deleted.");
+        }}
+        confirmButtonText={"Delete Goal"}
+      />
+
       <Typography
         color={"text.secondary"}
         marginBottom={3}
@@ -103,6 +121,7 @@ const GoalRow = ({ goal }: GoalRowProps) => {
 
         {(isEditing || !isGoalCreated) && (
           <TextField
+            autoFocus
             sx={{ marginRight: 1 }}
             variant={"standard"}
             label="Goal"
@@ -136,8 +155,20 @@ const GoalRow = ({ goal }: GoalRowProps) => {
         )}
         {!isEditing && isGoalCreated && (
           <Tooltip title="Delete Goal">
-            <IconButton onClick={() => deleteGoal.mutate(goal?.id)}>
+            <IconButton onClick={() => setShowDeleteModal(true)}>
               <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+        {isEditing && (
+          <Tooltip title={"Cancel"}>
+            <IconButton
+              onClick={() => {
+                setDescription(goal?.description);
+                setIsEditing(false);
+              }}
+            >
+              <ClearIcon />
             </IconButton>
           </Tooltip>
         )}
