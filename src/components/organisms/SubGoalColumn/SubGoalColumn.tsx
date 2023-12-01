@@ -25,6 +25,9 @@ import {
   useUnCompleteSubGoalMutation,
 } from "../../../api/SubGoalCompletionApi";
 import SaveIcon from "@mui/icons-material/Save";
+import ClearIcon from "@mui/icons-material/Clear";
+import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
+import { useToast } from "../../../hooks/useToast";
 
 interface GoalColumnProps {
   goalId?: number;
@@ -42,6 +45,8 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
   const [showAddTaskModal, setShowAddTaskModal] = useState<boolean>(false);
   const [description, setDescription] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const { handleSetShowToast } = useToast();
 
   useEffect(() => {
     if (isSubGoalCreated) setDescription(subGoal?.description);
@@ -63,6 +68,19 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
         alignItems: "center",
       }}
     >
+      <ConfirmationModal
+        isLoading={deleteSubGoal.isPending}
+        headerText={`Are you sure you want to delete the following sub-goal?`}
+        bodyText={`${subGoal?.description}`}
+        show={showDeleteModal}
+        closeModal={() => setShowDeleteModal(false)}
+        handleConfirmClick={() => {
+          deleteSubGoal.mutate(subGoal?.id);
+          handleSetShowToast("The sub-goal has been deleted.");
+        }}
+        confirmButtonText={"Delete Sub-Goal"}
+      />
+
       <Box
         sx={{
           display: "flex",
@@ -79,13 +97,13 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
               textDecoration: subGoal?.isCompleted ? "line-through" : "none",
             }}
             variant="subtitle1"
-            gutterBottom
           >
             {description}
           </Typography>
         )}
         {(isEditing || !isSubGoalCreated) && (
           <TextField
+            autoFocus
             sx={{ marginRight: 1 }}
             variant={"standard"}
             label="Sub-goal"
@@ -123,7 +141,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
             <span>
               <IconButton
                 disabled={!isSubGoalCreated}
-                onClick={() => deleteSubGoal.mutate(subGoal?.id)}
+                onClick={() => setShowDeleteModal(true)}
               >
                 <DeleteIcon />
               </IconButton>
@@ -138,6 +156,18 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
               onClick={() => handleCompleteClick()}
             >
               <CheckIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+        {isEditing && (
+          <Tooltip title={"Cancel"}>
+            <IconButton
+              onClick={() => {
+                setDescription(subGoal?.description);
+                setIsEditing(false);
+              }}
+            >
+              <ClearIcon />
             </IconButton>
           </Tooltip>
         )}

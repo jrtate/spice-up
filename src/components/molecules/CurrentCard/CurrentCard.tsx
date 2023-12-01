@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import { StyledCard } from "./styles";
-import { DaysOfWeek, Task } from "models/Task";
+import { DaysOfWeek, Task, TaskBlock } from "models/Task";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteTaskMutation } from "api/TasksApi";
 import { useToast } from "hooks/useToast";
@@ -20,13 +20,17 @@ import {
   useCompleteTaskMutation,
   useUnCompleteTaskMutation,
 } from "api/TaskCompletionApi";
+import { useUpdateTaskBlockMutation } from "../../../api/TaskBlockApi";
+import ConfirmationModal from "../../organisms/ConfirmationModal/ConfirmationModal";
 
 interface CurrentCardProps {
   task: Task;
+  taskBlock: TaskBlock;
 }
 
-const CurrentCard = ({ task }: CurrentCardProps) => {
+const CurrentCard = ({ task, taskBlock }: CurrentCardProps) => {
   const queryClient = useQueryClient();
+  const upsertBlock = useUpdateTaskBlockMutation(queryClient);
   const duration = useMemo(
     () =>
       formatDuration(
@@ -38,6 +42,7 @@ const CurrentCard = ({ task }: CurrentCardProps) => {
   const deleteTask = useDeleteTaskMutation(queryClient);
   const completeTask = useCompleteTaskMutation(queryClient);
   const unCompleteTask = useUnCompleteTaskMutation(queryClient);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const { handleSetShowToast } = useToast();
 
   const handleDeleteTask = () => {
@@ -45,17 +50,50 @@ const CurrentCard = ({ task }: CurrentCardProps) => {
     handleSetShowToast("Task successfully deleted.");
   };
 
+  useEffect(() => {
+    if (taskBlock?.completedBlocks === taskBlock?.totalBlocks) {
+      const completedDay = DaysOfWeek[format(new Date(), "eeee")];
+      completeTask.mutate({ id: task.id, completedDay });
+    } else {
+      unCompleteTask.mutate(task.id);
+    }
+  }, [task.id, taskBlock?.completedBlocks, taskBlock?.totalBlocks]);
+
   const handleCompleteClick = () => {
     if (!task.isCompleted) {
       const completedDay = DaysOfWeek[format(new Date(), "eeee")];
       completeTask.mutate({ id: task.id, completedDay });
+      if (!taskBlock) return;
+      upsertBlock.mutate({
+        id: taskBlock.id,
+        taskId: taskBlock.taskId,
+        totalBlocks: taskBlock.totalBlocks,
+        completedBlocks: taskBlock?.totalBlocks,
+        dayOfWeek: taskBlock.dayOfWeek,
+      });
     } else if (task.isCompleted) {
       unCompleteTask.mutate(task.id);
+      upsertBlock.mutate({
+        id: taskBlock.id,
+        taskId: taskBlock.taskId,
+        totalBlocks: taskBlock.totalBlocks,
+        completedBlocks: 0,
+        dayOfWeek: taskBlock.dayOfWeek,
+      });
     }
   };
 
   return (
     <Box sx={{ m: 2 }}>
+      <ConfirmationModal
+        isLoading={deleteTask.isPending}
+        headerText={`Are you sure you want to delete the following task?`}
+        bodyText={`${task?.description}`}
+        show={showDeleteModal}
+        closeModal={() => setShowDeleteModal(false)}
+        handleConfirmClick={() => handleDeleteTask()}
+        confirmButtonText={"Delete Task"}
+      />
       <EditTaskModal
         show={showEditTaskModal}
         closeModal={() => setShowEditTaskModal(false)}
@@ -93,12 +131,12 @@ const CurrentCard = ({ task }: CurrentCardProps) => {
               <Button
                 size="small"
                 color={"secondary"}
-                onClick={() => handleDeleteTask()}
+                onClick={() => setShowDeleteModal(true)}
               >
                 Delete
               </Button>
             </Box>
-            <Tooltip title="Complete">
+            <Tooltip title={task.isCompleted ? "Un-Complete" : "Complete"}>
               <IconButton
                 color={task.isCompleted ? "success" : "primary"}
                 size="small"

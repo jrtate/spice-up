@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
+import PasswordChecklist from "react-password-checklist";
 import { SignUpContainer } from "./styles";
 import { useSignUpMutation } from "api/AuthApi";
 import { useToast } from "../../hooks/useToast";
@@ -11,45 +12,67 @@ const SignUp = () => {
   const signUp = useSignUpMutation(navigate, handleSetShowToast);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isValid, setIsValid] = useState<boolean>(false);
 
   return (
-    <SignUpContainer padding={3}>
-      <Typography sx={{ mb: 2 }} variant="h6">
-        Sign Up
-      </Typography>
-
-      <TextField
-        label="Email"
-        variant="standard"
-        value={email}
-        type="email"
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        fullWidth
-      />
-      <TextField
-        sx={{ mt: 1 }}
-        label="Password"
-        variant="standard"
-        value={password}
-        type="password"
-        onChange={(e) => setPassword(e.target.value)}
-        required
-        fullWidth
-      />
-
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }} mt={3}>
-        <Link to="/login">
-          <Button onClick={() => {}}>Back</Button>
-        </Link>
-        <Button
-          onClick={() => signUp.mutate({ email, password })}
-          disabled={!email || !password}
-        >
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        signUp.mutate({ email, password });
+      }}
+    >
+      <SignUpContainer padding={3}>
+        <Typography sx={{ mb: 3 }} variant="h6">
           Sign Up
-        </Button>
-      </Box>
-    </SignUpContainer>
+        </Typography>
+
+        <TextField
+          autoFocus
+          label="Email"
+          variant="standard"
+          value={email}
+          type="email"
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          fullWidth
+        />
+        <TextField
+          sx={{ mt: 1, mb: 2 }}
+          label="Password"
+          variant="standard"
+          value={password}
+          type="password"
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          fullWidth
+        />
+
+        <PasswordChecklist
+          rules={["minLength", "specialChar", "number", "capital"]}
+          minLength={8}
+          value={password}
+          valueAgain={password}
+          onChange={(isValid) => {
+            setIsValid(isValid);
+          }}
+        />
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+          mt={4}
+        >
+          <Link to="/login">
+            <Button onClick={() => {}}>Back</Button>
+          </Link>
+          <Button type="submit" disabled={!email || !password}>
+            Sign Up
+          </Button>
+        </Box>
+      </SignUpContainer>
+    </form>
   );
 };
 

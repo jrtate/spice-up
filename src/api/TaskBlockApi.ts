@@ -22,5 +22,6 @@ export const useUpdateTaskBlockMutation = (queryClient: QueryClient) =>
     onSuccess: () => {
       // Invalidate and re-fetch
       queryClient.invalidateQueries({ queryKey: ["taskBlocks"] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
     },
   });

@@ -51,7 +51,7 @@ const SettingsModal = ({ show, closeModal }: SettingsModalProps) => {
           Settings
         </Typography>
 
-        <Box sx={{ display: "flex", gap: 1 }}>
+        <Box sx={{ display: "flex", gap: 1, marginTop: 3 }}>
           <TextField
             label="Work Duration (in minutes)"
             variant="standard"

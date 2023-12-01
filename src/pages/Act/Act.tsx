@@ -6,13 +6,13 @@ import PageLoader from "components/atoms/PageLoader/PageLoader";
 import { Box, Typography } from "@mui/material";
 import { ReactSortable } from "react-sortablejs";
 import CurrentCard from "components/molecules/CurrentCard/CurrentCard";
+import { useQueryClient } from "@tanstack/react-query";
+import PomodoroTracker from "components/organisms/PomodoroTracker/PomodoroTracker";
+import { useGetTaskBlocksQuery } from "../../api/TaskBlockApi";
 import {
   useGetTaskOrdersQuery,
   useUpdateTaskSortOrderMutation,
 } from "../../api/OrderApi";
-import { useQueryClient } from "@tanstack/react-query";
-import PomodoroTracker from "components/organisms/PomodoroTracker/PomodoroTracker";
-import { useGetTaskBlocksQuery } from "../../api/TaskBlockApi";
 
 const Act = () => {
   const [currentTaskList, setCurrentTaskList] = useState<Task[]>([]);
@@ -109,7 +109,14 @@ const Act = () => {
                     justifyContent: "flex-start",
                   }}
                 >
-                  <CurrentCard task={task} />
+                  <CurrentCard
+                    task={task}
+                    taskBlock={taskBlockData?.find(
+                      (block) =>
+                        block.taskId === task.id &&
+                        block.dayOfWeek === DaysOfWeek[currentDay],
+                    )}
+                  />
                   {!!task.duration && (
                     <PomodoroTracker
                       task={task}

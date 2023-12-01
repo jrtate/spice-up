@@ -14,6 +14,7 @@ import { useToast } from "hooks/useToast";
 import EditTaskModal from "components/organisms/EditTaskModal/EditTaskModal";
 import { formatDuration, intervalToDuration } from "date-fns";
 import { useGetTaskCompletionCount } from "../../../api/TaskCompletionApi";
+import ConfirmationModal from "../../organisms/ConfirmationModal/ConfirmationModal";
 
 interface TaskDisplayCardProps {
   task: Task;
@@ -32,6 +33,7 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
   const { data: taskCompletions } = useGetTaskCompletionCount(task.id);
   const [showEditTaskModal, setShowEditTaskModal] = useState<boolean>(false);
   const deleteTask = useDeleteTaskMutation(queryClient);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const { handleSetShowToast } = useToast();
 
   const handleDeleteTask = () => {
@@ -41,6 +43,15 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
 
   return (
     <Box sx={{ width: "100%" }}>
+      <ConfirmationModal
+        isLoading={deleteTask.isPending}
+        headerText={`Are you sure you want to delete the following task?`}
+        bodyText={`${task?.description}`}
+        show={showDeleteModal}
+        closeModal={() => setShowDeleteModal(false)}
+        handleConfirmClick={() => handleDeleteTask()}
+        confirmButtonText={"Delete Task"}
+      />
       <EditTaskModal
         show={showEditTaskModal}
         closeModal={() => setShowEditTaskModal(false)}
@@ -82,7 +93,7 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
           <Button
             size="small"
             color={"secondary"}
-            onClick={() => handleDeleteTask()}
+            onClick={() => setShowDeleteModal(true)}
           >
             Delete
           </Button>
