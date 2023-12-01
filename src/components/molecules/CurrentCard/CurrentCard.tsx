@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import { StyledCard } from "./styles";
-import { DaysOfWeek, Task } from "models/Task";
+import { DaysOfWeek, Task, TaskBlock } from "models/Task";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteTaskMutation } from "api/TasksApi";
 import { useToast } from "hooks/useToast";
@@ -20,13 +20,16 @@ import {
   useCompleteTaskMutation,
   useUnCompleteTaskMutation,
 } from "api/TaskCompletionApi";
+import { useUpdateTaskBlockMutation } from "../../../api/TaskBlockApi";
 
 interface CurrentCardProps {
   task: Task;
+  taskBlock: TaskBlock;
 }
 
-const CurrentCard = ({ task }: CurrentCardProps) => {
+const CurrentCard = ({ task, taskBlock }: CurrentCardProps) => {
   const queryClient = useQueryClient();
+  const upsertBlock = useUpdateTaskBlockMutation(queryClient);
   const duration = useMemo(
     () =>
       formatDuration(
@@ -45,12 +48,37 @@ const CurrentCard = ({ task }: CurrentCardProps) => {
     handleSetShowToast("Task successfully deleted.");
   };
 
+  useEffect(() => {
+    console.log("stas", taskBlock);
+    if (taskBlock.completedBlocks === taskBlock.totalBlocks) {
+      const completedDay = DaysOfWeek[format(new Date(), "eeee")];
+      completeTask.mutate({ id: task.id, completedDay });
+    } else {
+      unCompleteTask.mutate(task.id);
+    }
+  }, [task.id, taskBlock.completedBlocks, taskBlock.totalBlocks]);
+
   const handleCompleteClick = () => {
     if (!task.isCompleted) {
       const completedDay = DaysOfWeek[format(new Date(), "eeee")];
       completeTask.mutate({ id: task.id, completedDay });
+      if (!taskBlock) return;
+      upsertBlock.mutate({
+        id: taskBlock.id,
+        taskId: taskBlock.taskId,
+        totalBlocks: taskBlock.totalBlocks,
+        completedBlocks: taskBlock?.totalBlocks,
+        dayOfWeek: taskBlock.dayOfWeek,
+      });
     } else if (task.isCompleted) {
       unCompleteTask.mutate(task.id);
+      upsertBlock.mutate({
+        id: taskBlock.id,
+        taskId: taskBlock.taskId,
+        totalBlocks: taskBlock.totalBlocks,
+        completedBlocks: 0,
+        dayOfWeek: taskBlock.dayOfWeek,
+      });
     }
   };
 

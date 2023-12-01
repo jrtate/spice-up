@@ -67,7 +67,10 @@ const PomodoroTracker = ({
 
   useEffect(() => {
     // Initialize block if one isn't saved
-    if (!taskBlock?.id && task.id && currentDay && totalBlockCount) {
+    if (
+      (!taskBlock?.id && task.id && currentDay && totalBlockCount) ||
+      totalBlockCount !== taskBlock?.totalBlocks
+    ) {
       upsertBlock.mutate({
         id: undefined,
         taskId: task.id,
