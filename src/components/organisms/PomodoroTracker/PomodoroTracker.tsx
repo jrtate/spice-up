@@ -31,6 +31,7 @@ const PomodoroTracker = ({
     [workBlockDuration, durationInMinutes],
   );
   const currentDay = format(new Date(), "eeee");
+  // The number of blocks that should be rendered based on settings
   const fullDurationBlocks = useMemo(() => {
     return Array.from(
       Array(Math.floor(durationInMinutes / workBlockDuration)).keys(),
@@ -46,7 +47,11 @@ const PomodoroTracker = ({
       id: taskBlock.id,
       taskId: taskBlock.taskId,
       totalBlocks: taskBlock.totalBlocks,
-      completedBlocks: taskBlock?.completedBlocks + 1,
+      // Prevent completed blocks from going over the total block count
+      completedBlocks:
+        taskBlock?.completedBlocks + 1 > taskBlock?.totalBlocks
+          ? taskBlock?.totalBlocks
+          : taskBlock?.completedBlocks + 1,
       dayOfWeek: taskBlock.dayOfWeek,
     });
   };
@@ -57,6 +62,7 @@ const PomodoroTracker = ({
       id: taskBlock.id,
       taskId: taskBlock.taskId,
       totalBlocks: taskBlock.totalBlocks,
+      // Prevent completed blocks from getting set below 0
       completedBlocks:
         taskBlock?.completedBlocks - 1 <= 0
           ? 0

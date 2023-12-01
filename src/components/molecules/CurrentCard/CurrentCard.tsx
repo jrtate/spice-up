@@ -126,7 +126,7 @@ const CurrentCard = ({ task, taskBlock }: CurrentCardProps) => {
                 Delete
               </Button>
             </Box>
-            <Tooltip title="Complete">
+            <Tooltip title={task.isCompleted ? "Un-Complete" : "Complete"}>
               <IconButton
                 color={task.isCompleted ? "success" : "primary"}
                 size="small"
