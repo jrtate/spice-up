@@ -21,6 +21,7 @@ import {
   useUnCompleteTaskMutation,
 } from "api/TaskCompletionApi";
 import { useUpdateTaskBlockMutation } from "../../../api/TaskBlockApi";
+import ConfirmationModal from "../../organisms/ConfirmationModal/ConfirmationModal";
 
 interface CurrentCardProps {
   task: Task;
@@ -41,6 +42,7 @@ const CurrentCard = ({ task, taskBlock }: CurrentCardProps) => {
   const deleteTask = useDeleteTaskMutation(queryClient);
   const completeTask = useCompleteTaskMutation(queryClient);
   const unCompleteTask = useUnCompleteTaskMutation(queryClient);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const { handleSetShowToast } = useToast();
 
   const handleDeleteTask = () => {
@@ -49,14 +51,13 @@ const CurrentCard = ({ task, taskBlock }: CurrentCardProps) => {
   };
 
   useEffect(() => {
-    console.log("stas", taskBlock);
-    if (taskBlock.completedBlocks === taskBlock.totalBlocks) {
+    if (taskBlock?.completedBlocks === taskBlock?.totalBlocks) {
       const completedDay = DaysOfWeek[format(new Date(), "eeee")];
       completeTask.mutate({ id: task.id, completedDay });
     } else {
       unCompleteTask.mutate(task.id);
     }
-  }, [task.id, taskBlock.completedBlocks, taskBlock.totalBlocks]);
+  }, [task.id, taskBlock?.completedBlocks, taskBlock?.totalBlocks]);
 
   const handleCompleteClick = () => {
     if (!task.isCompleted) {
@@ -84,6 +85,15 @@ const CurrentCard = ({ task, taskBlock }: CurrentCardProps) => {
 
   return (
     <Box sx={{ m: 2 }}>
+      <ConfirmationModal
+        isLoading={deleteTask.isPending}
+        headerText={`Are you sure you want to delete the following task?`}
+        bodyText={`${task?.description}`}
+        show={showDeleteModal}
+        closeModal={() => setShowDeleteModal(false)}
+        handleConfirmClick={() => handleDeleteTask()}
+        confirmButtonText={"Delete Task"}
+      />
       <EditTaskModal
         show={showEditTaskModal}
         closeModal={() => setShowEditTaskModal(false)}
@@ -121,7 +131,7 @@ const CurrentCard = ({ task, taskBlock }: CurrentCardProps) => {
               <Button
                 size="small"
                 color={"secondary"}
-                onClick={() => handleDeleteTask()}
+                onClick={() => setShowDeleteModal(true)}
               >
                 Delete
               </Button>

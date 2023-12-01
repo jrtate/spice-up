@@ -6,7 +6,7 @@ export const SignUpContainer = styled(Box)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  height: 20rem;
+  min-height: 20rem;
   width: 25rem;
   background-color: #272727;
   border: 1px solid #ffffff;

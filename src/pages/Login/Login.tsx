@@ -30,7 +30,7 @@ const Login = () => {
           label="Email"
           variant="standard"
           value={email}
-          // type="email"
+          type="email"
           onChange={(e) => setEmail(e.target.value)}
           required
           fullWidth
