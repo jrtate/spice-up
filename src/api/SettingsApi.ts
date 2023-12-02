@@ -11,7 +11,9 @@ export const useGetSettingsQuery = () =>
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}${BASE_URL}`,
       );
-      return response.data[0];
+      return (
+        response.data[0] || { workBlockDuration: 25, breakBlockDuration: 5 }
+      );
     },
   });
 

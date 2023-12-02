@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { Box, Drawer, IconButton, Paper, Tooltip } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,18 +9,9 @@ import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { PageContainer } from "./styles";
 import SettingsModal from "../SettingsModal/SettingsModal";
-import { useQueryClient } from "@tanstack/react-query";
-import {
-  useGetSettingsQuery,
-  useUpdateSettingsMutation,
-} from "../../../api/SettingsApi";
 
 const Page = ({ children }: any) => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const { data: settingsData, isLoading: isSettingsDataLoading } =
-    useGetSettingsQuery();
-  const updateSettings = useUpdateSettingsMutation(queryClient);
   const [path, setPath] = useState<string>(window.location.pathname);
   const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
   const drawerWidth = 48;
@@ -31,11 +22,6 @@ const Page = ({ children }: any) => {
     axios.defaults.headers.common = { Authorization: "" };
     navigate("/login");
   };
-
-  useEffect(() => {
-    if (!settingsData?.id && !isSettingsDataLoading)
-      updateSettings.mutate({ workBlockDuration: 25, breakBlockDuration: 5 });
-  }, [settingsData, isSettingsDataLoading]);
 
   return (
     <PageContainer>
