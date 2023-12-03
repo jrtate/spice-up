@@ -61,6 +61,7 @@ const GoalRow = ({ goal }: GoalRowProps) => {
     if (!goal?.id) return;
     if (!goal?.isCompleted && currentGoalProgress >= 100) {
       completeGoal.mutate(goal.id);
+      handleSetShowToast("Goal finished!");
     } else if (goal?.isCompleted && currentGoalProgress < 100) {
       unCompleteGoal.mutate(goal.id);
     }
@@ -143,8 +144,10 @@ const GoalRow = ({ goal }: GoalRowProps) => {
               onClick={() => {
                 if (isGoalCreated) {
                   editGoal.mutate({ id: goal?.id, description });
+                  handleSetShowToast("Goal saved.");
                 } else {
                   saveGoal.mutate({ description });
+                  handleSetShowToast("Goal created.");
                 }
                 setIsEditing(false);
               }}
