@@ -4,7 +4,7 @@ import { isTokenValid } from "utils/tokenValidation";
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
 
-  if (!isTokenValid()) navigate("/login");
+  if (isTokenValid()) navigate("/login");
 
   return children;
 };
