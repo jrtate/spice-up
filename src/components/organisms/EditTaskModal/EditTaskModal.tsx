@@ -36,7 +36,9 @@ const EditTaskModal = ({ show, closeModal, task }: EditTaskModalProps) => {
     setIsRandom(task.isRandom);
     setCheckedDays(task.daysOfWeek || []);
     setFrequency(task.frequency || 1);
-    setScheduledDay(new Date(task.scheduledDay) || new Date());
+    setScheduledDay(
+      task.scheduledDay ? new Date(task.scheduledDay) : new Date(),
+    );
   }, [task, show]);
 
   const handleModalClose = () => {

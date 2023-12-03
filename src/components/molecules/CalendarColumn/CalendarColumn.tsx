@@ -46,7 +46,6 @@ const CalendarColumn = ({ header, taskList }: CalendarColumnProps) => {
               "MM-dd-yy",
             )),
     );
-    console.log("updated", updatedTaskList);
     setTasks(updatedTaskList);
   }, [taskList]);
 
