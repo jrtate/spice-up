@@ -1,17 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import { AuthCreds } from "../models/Auth";
 import { add } from "date-fns";
+import api from "./Api";
 
 const BASE_URL = "/auth";
 
 export const useSignUpMutation = (navigate, handleSetShowToast) =>
   useMutation({
     mutationFn: (authCreds: AuthCreds) =>
-      axios.post(
-        `${process.env.REACT_APP_BASE_URL}${BASE_URL}/signup`,
-        authCreds,
-      ),
+      api.post(`${BASE_URL}/signup`, authCreds),
     onSuccess: () => {
       handleSetShowToast("Success!");
       navigate("/login");
@@ -24,16 +21,16 @@ export const useSignUpMutation = (navigate, handleSetShowToast) =>
 export const useLoginMutation = (navigate, handleSetShowToast) =>
   useMutation({
     mutationFn: (authCreds: AuthCreds) =>
-      axios.post(
-        `${process.env.REACT_APP_BASE_URL}${BASE_URL}/login`,
-        authCreds,
-      ),
+      api.post(`${BASE_URL}/login`, authCreds),
     onSuccess: (res) => {
-      const token = res.data.user.token;
-      const expiration = add(new Date(), { hours: 1 });
-      sessionStorage.setItem("tokenExpiration", `${expiration}`);
+      const { token, refreshToken } = res.data.user;
+      const tokenExpiration = add(new Date(), { hours: 1 });
+      const refreshExpiration = add(new Date(), { hours: 24 });
+      sessionStorage.setItem("tokenExpiration", `${tokenExpiration}`);
+      sessionStorage.setItem("refreshExpiration", `${refreshExpiration}`);
       sessionStorage.setItem("token", token);
-      axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
+      sessionStorage.setItem("refreshToken", refreshToken);
+      api.defaults.headers.common = { Authorization: `Bearer ${token}` };
       navigate("/brainstorm");
     },
     onError: (error) => {

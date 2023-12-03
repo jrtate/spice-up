@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { Box, Drawer, IconButton, Paper, Tooltip } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
@@ -9,6 +8,7 @@ import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { PageContainer } from "./styles";
 import SettingsModal from "../SettingsModal/SettingsModal";
+import { invalidateTokenSession } from "../../../utils/tokenService";
 
 const Page = ({ children }: any) => {
   const navigate = useNavigate();
@@ -17,9 +17,7 @@ const Page = ({ children }: any) => {
   const drawerWidth = 48;
 
   const handleLogout = () => {
-    sessionStorage.setItem("tokenExpiration", "");
-    sessionStorage.setItem("token", "");
-    axios.defaults.headers.common = { Authorization: "" };
+    invalidateTokenSession();
     navigate("/login");
   };
 
