@@ -50,20 +50,27 @@ const CurrentCard = ({ task, taskBlock }: CurrentCardProps) => {
     handleSetShowToast("Task successfully deleted.");
   };
 
+  // Auto-complete/un-complete
   useEffect(() => {
+    if (!task.duration) return;
     if (taskBlock?.completedBlocks === taskBlock?.totalBlocks) {
       const completedDay = DaysOfWeek[format(new Date(), "eeee")];
       completeTask.mutate({ id: task.id, completedDay });
     } else {
       unCompleteTask.mutate(task.id);
     }
-  }, [task.id, taskBlock?.completedBlocks, taskBlock?.totalBlocks]);
+  }, [
+    task.id,
+    taskBlock?.completedBlocks,
+    taskBlock?.totalBlocks,
+    task.duration,
+  ]);
 
   const handleCompleteClick = () => {
     if (!task.isCompleted) {
       const completedDay = DaysOfWeek[format(new Date(), "eeee")];
       completeTask.mutate({ id: task.id, completedDay });
-      if (!taskBlock) return;
+      if (!taskBlock || !task.duration) return;
       upsertBlock.mutate({
         id: taskBlock.id,
         taskId: taskBlock.taskId,
@@ -73,6 +80,7 @@ const CurrentCard = ({ task, taskBlock }: CurrentCardProps) => {
       });
     } else if (task.isCompleted) {
       unCompleteTask.mutate(task.id);
+      if (!task.duration) return;
       upsertBlock.mutate({
         id: taskBlock.id,
         taskId: taskBlock.taskId,
@@ -112,9 +120,11 @@ const CurrentCard = ({ task, taskBlock }: CurrentCardProps) => {
           >
             {task.description}
           </Typography>
-          <Typography mt={1} mb={-2} color="text.secondary">
-            {duration}
-          </Typography>
+          {!!duration && (
+            <Typography mt={1} mb={-2} color="text.secondary">
+              {duration}
+            </Typography>
+          )}
         </CardContent>
         <CardActions>
           <Box

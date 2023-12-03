@@ -28,7 +28,7 @@ interface ModalFrameProps {
   handleModalClose: () => void;
   description: string;
   setDescription: (s: string) => void;
-  duration: number;
+  duration?: number;
   setDuration: (n: number) => void;
   isRecurring: boolean;
   setIsRecurring: (b: boolean) => void;
@@ -85,7 +85,6 @@ const TaskModalFrame = ({
             value={duration}
             type={"number"}
             onChange={(e) => setDuration(parseInt(e.target.value))}
-            required
             fullWidth
           />
         </Box>
@@ -255,7 +254,6 @@ const TaskModalFrame = ({
               (checkedDays.length === 0 && !isRandom && isRecurring) ||
               isLoading ||
               !description ||
-              !duration ||
               (!isRecurring && !scheduledDay)
             }
           >

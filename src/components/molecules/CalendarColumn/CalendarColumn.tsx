@@ -38,12 +38,15 @@ const CalendarColumn = ({ header, taskList }: CalendarColumnProps) => {
     // Remove any one time tasks that aren't scheduled for this day
     const updatedTaskList = taskList?.filter?.(
       (task) =>
-        format(getDate(), "MM-dd-yy") ===
-        format(
-          task.scheduledDay ? new Date(task?.scheduledDay) : new Date(),
-          "MM-dd-yy",
-        ),
+        (task.isRecurring && !task.scheduledDay) ||
+        (!task.isRecurring &&
+          format(getDate(), "MM-dd-yy") ===
+            format(
+              task.scheduledDay ? new Date(task?.scheduledDay) : new Date(),
+              "MM-dd-yy",
+            )),
     );
+    console.log("updated", updatedTaskList);
     setTasks(updatedTaskList);
   }, [taskList]);
 

@@ -12,7 +12,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteTaskMutation } from "../../../api/TasksApi";
 import { useToast } from "hooks/useToast";
 import EditTaskModal from "components/organisms/EditTaskModal/EditTaskModal";
-import { formatDuration, intervalToDuration } from "date-fns";
+import {
+  formatDistanceStrict,
+  formatDuration,
+  intervalToDuration,
+} from "date-fns";
 import { useGetTaskCompletionCount } from "../../../api/TaskCompletionApi";
 import ConfirmationModal from "../../organisms/ConfirmationModal/ConfirmationModal";
 
@@ -66,14 +70,29 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
           <Typography variant="h6" component="div">
             {task?.description?.toUpperCase()}
           </Typography>
-          <Typography
-            mt={1}
-            mb={2}
-            variant={"subtitle1"}
-            color="text.secondary"
-          >
-            Duration: {duration}.
-          </Typography>
+          {!!duration && (
+            <Typography
+              mt={1}
+              mb={1}
+              variant={"subtitle1"}
+              color="text.secondary"
+            >
+              Duration: {duration}.
+            </Typography>
+          )}
+          {!task?.isRecurring && task?.scheduledDay && (
+            <Typography
+              mt={1}
+              mb={1}
+              variant={"subtitle1"}
+              color="text.secondary"
+            >
+              Due{" "}
+              {formatDistanceStrict(new Date(), new Date(task.scheduledDay), {
+                addSuffix: true,
+              })}
+            </Typography>
+          )}
           {showCompletionStats && task?.isRecurring && (
             <Typography mt={1} variant={"body1"} color="text.secondary">
               Number of times completed: {taskCompletions || 0}
