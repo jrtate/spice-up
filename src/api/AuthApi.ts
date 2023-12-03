@@ -1,6 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
 import { AuthCreds } from "../models/Auth";
-import { add } from "date-fns";
 import api from "./Api";
 
 const BASE_URL = "/auth";
@@ -23,10 +22,7 @@ export const useLoginMutation = (navigate, handleSetShowToast) =>
     mutationFn: (authCreds: AuthCreds) =>
       api.post(`${BASE_URL}/login`, authCreds),
     onSuccess: (res) => {
-      const { token, refreshToken, email } = res.data.user;
-      const tokenExpiration = add(new Date(), { hours: 1 });
-      const refreshExpiration = add(new Date(), { hours: 24 });
-      sessionStorage.setItem("tokenExpiration", `${tokenExpiration}`);
+      const { token, refreshToken, email, refreshExpiration } = res.data.user;
       sessionStorage.setItem("refreshExpiration", `${refreshExpiration}`);
       sessionStorage.setItem("token", token);
       sessionStorage.setItem("refreshToken", refreshToken);
