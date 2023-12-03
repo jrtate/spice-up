@@ -1,33 +1,16 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { CalendarContainer } from "./styles";
 import CalendarColumn from "components/molecules/CalendarColumn/CalendarColumn";
-import FloatingAddButton from "components/atoms/FloatingAddButton/FloatingAddButton";
 import { DaysOfWeek, Task } from "models/Task";
-import AddTaskModal from "../../components/organisms/AddTaskModal/AddTaskModal";
 import { useGetTasksQuery } from "api/TasksApi";
 import PageLoader from "../../components/atoms/PageLoader/PageLoader";
 import { useGetTaskOrdersQuery } from "api/OrderApi";
 import { Box } from "@mui/material";
-import { eachDayOfInterval, format } from "date-fns";
-import { enUS } from "date-fns/locale";
+import { format } from "date-fns";
 
 const Plan = () => {
-  const [showAddTaskModal, setShowAddTaskModal] = useState<boolean>(false);
   const { isLoading, data: taskData } = useGetTasksQuery();
   const { data: taskOrderData } = useGetTaskOrdersQuery();
-
-  const prevMonday = new Date();
-  prevMonday.setDate(prevMonday.getDate() - ((prevMonday.getDay() + 6) % 7));
-  const daysOfWeek = eachDayOfInterval({
-    start: prevMonday,
-    end: new Date().setDate(prevMonday.getDate() + 6),
-  });
-
-  const getDate = (key) => {
-    return daysOfWeek.find(
-      (day) => format(day, "eeee", { locale: enUS }) === key,
-    );
-  };
 
   const sortTasksToDayOfWeek = useCallback(
     (key: DaysOfWeek) => {
@@ -94,12 +77,6 @@ const Plan = () => {
           />
         </Box>
       )}
-
-      <FloatingAddButton onClick={() => setShowAddTaskModal(true)} />
-      <AddTaskModal
-        show={showAddTaskModal}
-        closeModal={() => setShowAddTaskModal(false)}
-      />
     </CalendarContainer>
   );
 };
