@@ -67,7 +67,7 @@ const SignUp = () => {
           <Link to="/login">
             <Button onClick={() => {}}>Back</Button>
           </Link>
-          <Button type="submit" disabled={!email || !password}>
+          <Button type="submit" disabled={!isValid}>
             Sign Up
           </Button>
         </Box>
