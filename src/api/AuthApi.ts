@@ -23,13 +23,14 @@ export const useLoginMutation = (navigate, handleSetShowToast) =>
     mutationFn: (authCreds: AuthCreds) =>
       api.post(`${BASE_URL}/login`, authCreds),
     onSuccess: (res) => {
-      const { token, refreshToken } = res.data.user;
+      const { token, refreshToken, email } = res.data.user;
       const tokenExpiration = add(new Date(), { hours: 1 });
       const refreshExpiration = add(new Date(), { hours: 24 });
       sessionStorage.setItem("tokenExpiration", `${tokenExpiration}`);
       sessionStorage.setItem("refreshExpiration", `${refreshExpiration}`);
       sessionStorage.setItem("token", token);
       sessionStorage.setItem("refreshToken", refreshToken);
+      sessionStorage.setItem("email", email);
       api.defaults.headers.common = { Authorization: `Bearer ${token}` };
       navigate("/brainstorm");
     },

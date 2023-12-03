@@ -1,6 +1,5 @@
 import axios from "axios";
 import { add } from "date-fns";
-import { invalidateTokenSession } from "../utils/tokenService";
 
 const api = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
@@ -38,9 +37,13 @@ api.interceptors.response.use(
       originalConfig._retry = true;
 
       try {
-        const response = await axios.post("/auth/refresh", {
-          refreshToken: sessionStorage.getItem("refreshToken"),
-        });
+        const response = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/auth/refresh`,
+          {
+            email: sessionStorage.getItem("email"),
+            refreshToken: sessionStorage.getItem("refreshToken"),
+          },
+        );
 
         const { accessToken } = response.data;
         const tokenExpiration = add(new Date(), { hours: 1 });
@@ -50,7 +53,6 @@ api.interceptors.response.use(
 
         return axios(originalConfig);
       } catch (_error) {
-        invalidateTokenSession();
         return Promise.reject(_error);
       }
     }
