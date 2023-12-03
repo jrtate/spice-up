@@ -18,6 +18,9 @@ import {
 } from "@mui/material";
 import { DaysOfWeek } from "models/Task";
 import { LoadingButton } from "@mui/lab";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 interface ModalFrameProps {
   title: string;
@@ -35,6 +38,8 @@ interface ModalFrameProps {
   setIsRandom: (b: boolean) => void;
   frequency?: number;
   setFrequency: (n: number) => void;
+  scheduledDay: Date;
+  setScheduledDay: (d: Date) => void;
   isLoading: boolean;
   handleSaveTask: () => void;
 }
@@ -55,6 +60,8 @@ const TaskModalFrame = ({
   setIsRandom,
   frequency,
   setFrequency,
+  scheduledDay,
+  setScheduledDay,
   isLoading,
   handleSaveTask,
 }: ModalFrameProps) => {
@@ -109,126 +116,147 @@ const TaskModalFrame = ({
           </RadioGroup>
         </Box>
 
-        <Box mt={2}>
+        <Box mt={2} sx={{ display: "flex", flexDirection: "column" }}>
           <FormLabel>Schedule Task</FormLabel>
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Box sx={{ display: "flex" }}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checkedDays.includes(DaysOfWeek.Monday)}
-                    onChange={() => handleDayOfWeekClick(DaysOfWeek.Monday)}
-                  />
-                }
-                label="Monday"
+          {!isRecurring && (
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                value={scheduledDay}
+                onChange={(newValue) => setScheduledDay(newValue)}
               />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checkedDays.includes(DaysOfWeek.Tuesday)}
-                    onChange={() => handleDayOfWeekClick(DaysOfWeek.Tuesday)}
-                  />
-                }
-                label="Tuesday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checkedDays.includes(DaysOfWeek.Wednesday)}
-                    onChange={() => handleDayOfWeekClick(DaysOfWeek.Wednesday)}
-                  />
-                }
-                label="Wednesday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checkedDays.includes(DaysOfWeek.Thursday)}
-                    onChange={() => handleDayOfWeekClick(DaysOfWeek.Thursday)}
-                  />
-                }
-                label="Thursday"
-              />
+            </LocalizationProvider>
+          )}
+
+          {isRecurring && (
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Box sx={{ display: "flex" }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkedDays.includes(DaysOfWeek.Monday)}
+                      onChange={() => handleDayOfWeekClick(DaysOfWeek.Monday)}
+                    />
+                  }
+                  label="Monday"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkedDays.includes(DaysOfWeek.Tuesday)}
+                      onChange={() => handleDayOfWeekClick(DaysOfWeek.Tuesday)}
+                    />
+                  }
+                  label="Tuesday"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkedDays.includes(DaysOfWeek.Wednesday)}
+                      onChange={() =>
+                        handleDayOfWeekClick(DaysOfWeek.Wednesday)
+                      }
+                    />
+                  }
+                  label="Wednesday"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkedDays.includes(DaysOfWeek.Thursday)}
+                      onChange={() => handleDayOfWeekClick(DaysOfWeek.Thursday)}
+                    />
+                  }
+                  label="Thursday"
+                />
+              </Box>
+              <Box sx={{ display: "flex" }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkedDays.includes(DaysOfWeek.Friday)}
+                      onChange={() => handleDayOfWeekClick(DaysOfWeek.Friday)}
+                    />
+                  }
+                  label="Friday"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkedDays.includes(DaysOfWeek.Saturday)}
+                      onChange={() => handleDayOfWeekClick(DaysOfWeek.Saturday)}
+                    />
+                  }
+                  label="Saturday"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkedDays.includes(DaysOfWeek.Sunday)}
+                      onChange={() => handleDayOfWeekClick(DaysOfWeek.Sunday)}
+                    />
+                  }
+                  label="Sunday"
+                />
+              </Box>
             </Box>
-            <Box sx={{ display: "flex" }}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checkedDays.includes(DaysOfWeek.Friday)}
-                    onChange={() => handleDayOfWeekClick(DaysOfWeek.Friday)}
-                  />
+          )}
+        </Box>
+
+        {isRecurring && (
+          <Box mt={2}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={isRandom}
+                  onClick={() => setIsRandom(!isRandom)}
+                />
+              }
+              label="Add Some Spice! (Randomize)"
+            />
+            <FormControl sx={{ marginY: 1 }} fullWidth>
+              <InputLabel id="frequency-label">Frequency</InputLabel>
+              <Select
+                disabled={!isRandom}
+                labelId="frequency-label"
+                id="frequency-select"
+                value={frequency}
+                label="Frequency"
+                onChange={(e) =>
+                  setFrequency(parseInt(e.target.value as string))
                 }
-                label="Friday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checkedDays.includes(DaysOfWeek.Saturday)}
-                    onChange={() => handleDayOfWeekClick(DaysOfWeek.Saturday)}
-                  />
-                }
-                label="Saturday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checkedDays.includes(DaysOfWeek.Sunday)}
-                    onChange={() => handleDayOfWeekClick(DaysOfWeek.Sunday)}
-                  />
-                }
-                label="Sunday"
-              />
-            </Box>
+              >
+                {Array.from(
+                  Array(
+                    checkedDays.length === 0 ? 7 : checkedDays.length,
+                  ).keys(),
+                ).map((val: number) => {
+                  return (
+                    <MenuItem key={val} value={val + 1}>
+                      {val + 1}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+
+            <Typography variant="body2" color={"secondary"}>
+              If specific days are selected, it will only assign the task
+              randomly to those selected days. The frequency controls the number
+              of times that task will be assigned in a week.
+            </Typography>
           </Box>
-        </Box>
-
-        <Box mt={2}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={isRandom}
-                onClick={() => setIsRandom(!isRandom)}
-              />
-            }
-            label="Add Some Spice! (Randomize)"
-          />
-          <FormControl sx={{ marginY: 1 }} fullWidth>
-            <InputLabel id="frequency-label">Frequency</InputLabel>
-            <Select
-              disabled={!isRandom}
-              labelId="frequency-label"
-              id="frequency-select"
-              value={frequency}
-              label="Frequency"
-              onChange={(e) => setFrequency(parseInt(e.target.value as string))}
-            >
-              {Array.from(
-                Array(checkedDays.length === 0 ? 7 : checkedDays.length).keys(),
-              ).map((val: number) => {
-                return (
-                  <MenuItem key={val} value={val + 1}>
-                    {val + 1}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-
-          <Typography variant="body2" color={"secondary"}>
-            If specific days are selected, it will only assign the task randomly
-            to those selected days.
-          </Typography>
-        </Box>
+        )}
 
         <Box sx={{ display: "flex", justifyContent: "flex-end" }} mt={3}>
           <LoadingButton
             loading={isLoading}
             onClick={() => handleSaveTask()}
             disabled={
-              (checkedDays.length === 0 && !isRandom) ||
+              (checkedDays.length === 0 && !isRandom && isRecurring) ||
               isLoading ||
               !description ||
-              !duration
+              !duration ||
+              (!isRecurring && !scheduledDay)
             }
           >
             Save

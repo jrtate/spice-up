@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
 import { eachDayOfInterval, format } from "date-fns";
 import CalendarHeader from "../../atoms/CalendarHeader/CalendarHeader";
@@ -19,9 +19,32 @@ const CalendarColumn = ({ header, taskList }: CalendarColumnProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const queryClient = useQueryClient();
   const updateTaskOrder = useUpdateTaskSortOrderMutation(queryClient);
+  const daysOfWeek = useMemo(() => {
+    const prevMonday = new Date();
+    prevMonday.setDate(prevMonday.getDate() - ((prevMonday.getDay() + 6) % 7));
+    return eachDayOfInterval({
+      start: prevMonday,
+      end: new Date().setDate(prevMonday.getDate() + 6),
+    });
+  }, []);
+
+  const getDate = () => {
+    return daysOfWeek.find(
+      (day) => format(day, "eeee", { locale: enUS }) === header,
+    );
+  };
 
   useEffect(() => {
-    setTasks(taskList);
+    // Remove any one time tasks that aren't scheduled for this day
+    const updatedTaskList = taskList?.filter?.(
+      (task) =>
+        format(getDate(), "MM-dd-yy") ===
+        format(
+          task.scheduledDay ? new Date(task?.scheduledDay) : new Date(),
+          "MM-dd-yy",
+        ),
+    );
+    setTasks(updatedTaskList);
   }, [taskList]);
 
   const saveSortOrder = (updatedTaskList: Task[]) => {
@@ -35,19 +58,6 @@ const CalendarColumn = ({ header, taskList }: CalendarColumnProps) => {
     });
 
     updateTaskOrder.mutate(mappedOrder);
-  };
-
-  const prevMonday = new Date();
-  prevMonday.setDate(prevMonday.getDate() - ((prevMonday.getDay() + 6) % 7));
-  const daysOfWeek = eachDayOfInterval({
-    start: prevMonday,
-    end: new Date().setDate(prevMonday.getDate() + 6),
-  });
-
-  const getDate = () => {
-    return daysOfWeek.find(
-      (day) => format(day, "eeee", { locale: enUS }) === header,
-    );
   };
 
   return (

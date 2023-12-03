@@ -18,6 +18,7 @@ const AddTaskModal = ({ show, closeModal, subGoalId }: AddTaskModalProps) => {
   const [isRecurring, setIsRecurring] = useState<boolean>(true);
   const [isRandom, setIsRandom] = useState<boolean>(false);
   const [checkedDays, setCheckedDays] = useState<DaysOfWeek[]>([]);
+  const [scheduledDay, setScheduledDay] = useState<Date>(new Date());
   const addTask = useAddTaskMutation(queryClient);
   const { handleSetShowToast } = useToast();
   const [frequency, setFrequency] = useState<number>(1);
@@ -29,6 +30,7 @@ const AddTaskModal = ({ show, closeModal, subGoalId }: AddTaskModalProps) => {
     setIsRandom(false);
     setCheckedDays([]);
     setFrequency(1);
+    setScheduledDay(new Date());
     closeModal();
   };
 
@@ -50,6 +52,7 @@ const AddTaskModal = ({ show, closeModal, subGoalId }: AddTaskModalProps) => {
         daysOfWeek: checkedDays,
         isRandom,
         frequency,
+        scheduledDay,
       });
       handleModalClose();
       handleSetShowToast("Task successfully added.");
@@ -88,6 +91,8 @@ const AddTaskModal = ({ show, closeModal, subGoalId }: AddTaskModalProps) => {
       setFrequency={setFrequency}
       setIsRandom={setIsRandom}
       setIsRecurring={setIsRecurring}
+      scheduledDay={scheduledDay}
+      setScheduledDay={setScheduledDay}
     />
   );
 };

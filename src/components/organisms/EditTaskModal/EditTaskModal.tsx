@@ -27,6 +27,7 @@ const EditTaskModal = ({ show, closeModal, task }: EditTaskModalProps) => {
     task.daysOfWeek || [],
   );
   const [frequency, setFrequency] = useState<number>(task.frequency || 1);
+  const [scheduledDay, setScheduledDay] = useState<Date>(new Date());
 
   useEffect(() => {
     setDescription(task.description || "");
@@ -35,6 +36,7 @@ const EditTaskModal = ({ show, closeModal, task }: EditTaskModalProps) => {
     setIsRandom(task.isRandom);
     setCheckedDays(task.daysOfWeek || []);
     setFrequency(task.frequency || 1);
+    setScheduledDay(new Date(task.scheduledDay) || new Date());
   }, [task, show]);
 
   const handleModalClose = () => {
@@ -44,6 +46,7 @@ const EditTaskModal = ({ show, closeModal, task }: EditTaskModalProps) => {
     setIsRandom(task.isRandom || false);
     setCheckedDays(task.daysOfWeek || []);
     setFrequency(task.frequency || 1);
+    setScheduledDay(task.scheduledDay || new Date());
     closeModal();
   };
 
@@ -64,6 +67,7 @@ const EditTaskModal = ({ show, closeModal, task }: EditTaskModalProps) => {
         daysOfWeek: checkedDays,
         isRandom,
         frequency,
+        scheduledDay,
       });
       handleModalClose();
       handleSetShowToast("Task successfully saved.");
@@ -102,6 +106,8 @@ const EditTaskModal = ({ show, closeModal, task }: EditTaskModalProps) => {
       setFrequency={setFrequency}
       setIsRandom={setIsRandom}
       setIsRecurring={setIsRecurring}
+      scheduledDay={scheduledDay}
+      setScheduledDay={setScheduledDay}
     />
   );
 };
