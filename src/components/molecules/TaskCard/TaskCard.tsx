@@ -12,13 +12,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteTaskMutation } from "../../../api/TasksApi";
 import { useToast } from "hooks/useToast";
 import EditTaskModal from "components/organisms/EditTaskModal/EditTaskModal";
-import {
-  formatDistanceStrict,
-  formatDuration,
-  intervalToDuration,
-} from "date-fns";
+import { formatDuration, formatRelative, intervalToDuration } from "date-fns";
 import { useGetTaskCompletionCount } from "../../../api/TaskCompletionApi";
 import ConfirmationModal from "../../organisms/ConfirmationModal/ConfirmationModal";
+import { enUS } from "date-fns/locale";
 
 interface TaskDisplayCardProps {
   task: Task;
@@ -26,6 +23,19 @@ interface TaskDisplayCardProps {
 }
 
 const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
+  const formatRelativeLocale = {
+    lastWeek: "'last' eeee",
+    yesterday: "'Yesterday",
+    today: "'Today",
+    tomorrow: "'Tomorrow",
+    nextWeek: "eeee",
+    other: "P",
+  };
+  const locale = {
+    ...enUS,
+    formatRelative: (token) => formatRelativeLocale[token],
+  };
+
   const queryClient = useQueryClient();
   const duration = useMemo(
     () =>
@@ -88,8 +98,8 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
               color="text.secondary"
             >
               Due{" "}
-              {formatDistanceStrict(new Date(), new Date(task.scheduledDay), {
-                addSuffix: true,
+              {formatRelative(new Date(task.scheduledDay), new Date(), {
+                locale,
               })}
             </Typography>
           )}
