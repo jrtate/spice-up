@@ -18,7 +18,9 @@ const Brainstorm = () => {
       {!goals?.length ? (
         <GoalRow />
       ) : (
-        blankGoals?.map((i) => <GoalRow key={i} />)
+        blankGoals?.map((i) => (
+          <GoalRow key={i} onSaveGoal={() => setBlankGoals([])} />
+        ))
       )}
 
       <Box
@@ -27,13 +29,9 @@ const Brainstorm = () => {
       >
         <Tooltip title="Add New Goal" placement="top">
           <Fab
+            disabled={blankGoals.length === 1}
             color="primary"
-            onClick={() =>
-              setBlankGoals((prevState) => [
-                ...prevState,
-                blankGoals.length + 1,
-              ])
-            }
+            onClick={() => setBlankGoals([1])}
           >
             <AddIcon />
           </Fab>

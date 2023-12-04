@@ -29,9 +29,10 @@ import { useToast } from "../../../hooks/useToast";
 
 interface GoalRowProps {
   goal?: Goal;
+  onSaveGoal?: () => void;
 }
 
-const GoalRow = ({ goal }: GoalRowProps) => {
+const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
   const isGoalCreated = useMemo(() => goal?.id > 0, [goal]);
   const currentGoalProgress = useMemo(
     () =>
@@ -147,6 +148,7 @@ const GoalRow = ({ goal }: GoalRowProps) => {
                   handleSetShowToast("Goal saved.");
                 } else {
                   saveGoal.mutate({ description });
+                  onSaveGoal();
                   handleSetShowToast("Goal created.");
                 }
                 setIsEditing(false);
