@@ -49,6 +49,10 @@ const PomodoroCell = ({
 
   useEffect(() => {
     restart(expirationInSeconds, false);
+  }, [expirationInSeconds]);
+
+  useEffect(() => {
+    restart(expirationInSeconds, false);
   }, [taskBlock]);
 
   const isCompleted = useMemo(() => {
