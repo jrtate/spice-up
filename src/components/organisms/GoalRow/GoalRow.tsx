@@ -148,7 +148,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
                   handleSetShowToast("Goal saved.");
                 } else {
                   saveGoal.mutate({ description });
-                  onSaveGoal();
+                  onSaveGoal?.();
                   handleSetShowToast("Goal created.");
                 }
                 setIsEditing(false);

@@ -132,6 +132,7 @@ const TaskModalFrame = ({
                 <FormControlLabel
                   control={
                     <Checkbox
+                      disabled={isRandom}
                       checked={checkedDays.includes(DaysOfWeek.Monday)}
                       onChange={() => handleDayOfWeekClick(DaysOfWeek.Monday)}
                     />
@@ -141,6 +142,7 @@ const TaskModalFrame = ({
                 <FormControlLabel
                   control={
                     <Checkbox
+                      disabled={isRandom}
                       checked={checkedDays.includes(DaysOfWeek.Tuesday)}
                       onChange={() => handleDayOfWeekClick(DaysOfWeek.Tuesday)}
                     />
@@ -150,6 +152,7 @@ const TaskModalFrame = ({
                 <FormControlLabel
                   control={
                     <Checkbox
+                      disabled={isRandom}
                       checked={checkedDays.includes(DaysOfWeek.Wednesday)}
                       onChange={() =>
                         handleDayOfWeekClick(DaysOfWeek.Wednesday)
@@ -161,6 +164,7 @@ const TaskModalFrame = ({
                 <FormControlLabel
                   control={
                     <Checkbox
+                      disabled={isRandom}
                       checked={checkedDays.includes(DaysOfWeek.Thursday)}
                       onChange={() => handleDayOfWeekClick(DaysOfWeek.Thursday)}
                     />
@@ -172,6 +176,7 @@ const TaskModalFrame = ({
                 <FormControlLabel
                   control={
                     <Checkbox
+                      disabled={isRandom}
                       checked={checkedDays.includes(DaysOfWeek.Friday)}
                       onChange={() => handleDayOfWeekClick(DaysOfWeek.Friday)}
                     />
@@ -181,6 +186,7 @@ const TaskModalFrame = ({
                 <FormControlLabel
                   control={
                     <Checkbox
+                      disabled={isRandom}
                       checked={checkedDays.includes(DaysOfWeek.Saturday)}
                       onChange={() => handleDayOfWeekClick(DaysOfWeek.Saturday)}
                     />
@@ -190,6 +196,7 @@ const TaskModalFrame = ({
                 <FormControlLabel
                   control={
                     <Checkbox
+                      disabled={isRandom}
                       checked={checkedDays.includes(DaysOfWeek.Sunday)}
                       onChange={() => handleDayOfWeekClick(DaysOfWeek.Sunday)}
                     />
@@ -202,7 +209,7 @@ const TaskModalFrame = ({
         </Box>
 
         {isRecurring && (
-          <Box mt={2}>
+          <Box mt={1}>
             <FormControlLabel
               control={
                 <Switch
@@ -210,9 +217,9 @@ const TaskModalFrame = ({
                   onClick={() => setIsRandom(!isRandom)}
                 />
               }
-              label="Add Some Spice! (Randomize)"
+              label="Add Some Spice! (Randomize scheduled days)"
             />
-            <FormControl sx={{ marginY: 1 }} fullWidth>
+            <FormControl sx={{ marginY: 2 }} fullWidth>
               <InputLabel id="frequency-label">Frequency</InputLabel>
               <Select
                 disabled={!isRandom}
@@ -224,11 +231,7 @@ const TaskModalFrame = ({
                   setFrequency(parseInt(e.target.value as string))
                 }
               >
-                {Array.from(
-                  Array(
-                    checkedDays.length === 0 ? 7 : checkedDays.length,
-                  ).keys(),
-                ).map((val: number) => {
+                {Array.from(Array(7).keys()).map((val: number) => {
                   return (
                     <MenuItem key={val} value={val + 1}>
                       {val + 1}
@@ -237,12 +240,6 @@ const TaskModalFrame = ({
                 })}
               </Select>
             </FormControl>
-
-            <Typography variant="body2" color={"secondary"}>
-              If specific days are selected, it will only assign the task
-              randomly to those selected days. The frequency controls the number
-              of times that task will be assigned in a week.
-            </Typography>
           </Box>
         )}
 

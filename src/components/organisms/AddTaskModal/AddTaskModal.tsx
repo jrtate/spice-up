@@ -62,15 +62,8 @@ const AddTaskModal = ({ show, closeModal, subGoalId }: AddTaskModalProps) => {
   };
 
   useEffect(() => {
-    if (frequency > checkedDays.length) {
-      let updatedFrequency = frequency;
-      while (updatedFrequency > checkedDays.length) {
-        updatedFrequency = updatedFrequency - 1;
-      }
-      setFrequency(updatedFrequency);
-    }
-    if (checkedDays.length === 0) setFrequency(1);
-  }, [checkedDays, frequency]);
+    if (isRandom) setCheckedDays([]);
+  }, [isRandom]);
 
   return (
     <TaskModalFrame
