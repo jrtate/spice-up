@@ -1,4 +1,3 @@
-import axios from "axios";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { SubGoal } from "../models/Goal";
 import api from "./Api";
@@ -26,7 +25,7 @@ export const useEditSubGoalMutation = (queryClient: QueryClient) =>
 
 export const useDeleteSubGoalMutation = (queryClient: QueryClient) =>
   useMutation({
-    mutationFn: (id: number) => axios.delete(`${BASE_URL}/${id}`),
+    mutationFn: (id: number) => api.delete(`${BASE_URL}/${id}`),
     onSuccess: () => {
       // Invalidate and re-fetch
       queryClient.invalidateQueries({ queryKey: ["goals"] });
