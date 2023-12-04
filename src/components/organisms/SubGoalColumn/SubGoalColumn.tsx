@@ -55,6 +55,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
   const handleCompleteClick = () => {
     if (!subGoal?.isCompleted) {
       completeSubGoal.mutate(subGoal?.id);
+      handleSetShowToast("Sub-goal finished!");
     } else if (subGoal?.isCompleted) {
       unCompleteSubGoal.mutate(subGoal?.id);
     }
@@ -125,8 +126,10 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
               onClick={() => {
                 if (isSubGoalCreated) {
                   editSubGoal.mutate({ id: subGoal?.id, description });
+                  handleSetShowToast("Sub-goal saved.");
                 } else {
                   saveSubGoal.mutate({ goalId, description });
+                  handleSetShowToast("Sub-goal created.");
                 }
                 setDescription("");
                 setIsEditing(false);

@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
-import { format } from "date-fns";
+import { eachDayOfInterval, format } from "date-fns";
 import CalendarHeader from "../../atoms/CalendarHeader/CalendarHeader";
 import TaskCard from "../TaskCard/TaskCard";
 import { ReactSortable } from "react-sortablejs";
 import { DaysOfWeek, Task } from "../../../models/Task";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateTaskSortOrderMutation } from "../../../api/OrderApi";
+import { enUS } from "date-fns/locale";
+import { Typography } from "@mui/material";
 
 interface CalendarColumnProps {
   header: string;
@@ -17,9 +19,34 @@ const CalendarColumn = ({ header, taskList }: CalendarColumnProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const queryClient = useQueryClient();
   const updateTaskOrder = useUpdateTaskSortOrderMutation(queryClient);
+  const daysOfWeek = useMemo(() => {
+    const prevMonday = new Date();
+    prevMonday.setDate(prevMonday.getDate() - ((prevMonday.getDay() + 6) % 7));
+    return eachDayOfInterval({
+      start: prevMonday,
+      end: new Date().setDate(prevMonday.getDate() + 6),
+    });
+  }, []);
+
+  const getDate = () => {
+    return daysOfWeek.find(
+      (day) => format(day, "eeee", { locale: enUS }) === header,
+    );
+  };
 
   useEffect(() => {
-    setTasks(taskList);
+    // Remove any one time tasks that aren't scheduled for this day
+    const updatedTaskList = taskList?.filter?.(
+      (task) =>
+        (task.isRecurring && !task.scheduledDay) ||
+        (!task.isRecurring &&
+          format(getDate(), "MM-dd-yy") ===
+            format(
+              task.scheduledDay ? new Date(task?.scheduledDay) : new Date(),
+              "MM-dd-yy",
+            )),
+    );
+    setTasks(updatedTaskList);
   }, [taskList]);
 
   const saveSortOrder = (updatedTaskList: Task[]) => {
@@ -51,6 +78,7 @@ const CalendarColumn = ({ header, taskList }: CalendarColumnProps) => {
         }}
       >
         <CalendarHeader label={header} />
+        <Typography>{format(getDate(), "MM-dd")}</Typography>
       </Box>
       <ReactSortable
         animation={150}

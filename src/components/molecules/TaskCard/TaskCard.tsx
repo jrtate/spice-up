@@ -12,9 +12,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteTaskMutation } from "../../../api/TasksApi";
 import { useToast } from "hooks/useToast";
 import EditTaskModal from "components/organisms/EditTaskModal/EditTaskModal";
-import { formatDuration, intervalToDuration } from "date-fns";
+import { formatDuration, formatRelative, intervalToDuration } from "date-fns";
 import { useGetTaskCompletionCount } from "../../../api/TaskCompletionApi";
 import ConfirmationModal from "../../organisms/ConfirmationModal/ConfirmationModal";
+import { enUS } from "date-fns/locale";
 
 interface TaskDisplayCardProps {
   task: Task;
@@ -22,6 +23,19 @@ interface TaskDisplayCardProps {
 }
 
 const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
+  const formatRelativeLocale = {
+    lastWeek: "'last' eeee",
+    yesterday: "'Yesterday",
+    today: "'Today",
+    tomorrow: "'Tomorrow",
+    nextWeek: "eeee",
+    other: "P",
+  };
+  const locale = {
+    ...enUS,
+    formatRelative: (token) => formatRelativeLocale[token],
+  };
+
   const queryClient = useQueryClient();
   const duration = useMemo(
     () =>
@@ -66,14 +80,29 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
           <Typography variant="h6" component="div">
             {task?.description?.toUpperCase()}
           </Typography>
-          <Typography
-            mt={1}
-            mb={2}
-            variant={"subtitle1"}
-            color="text.secondary"
-          >
-            Duration: {duration}.
-          </Typography>
+          {!!duration && (
+            <Typography
+              mt={1}
+              mb={1}
+              variant={"subtitle1"}
+              color="text.secondary"
+            >
+              Duration: {duration}.
+            </Typography>
+          )}
+          {!task?.isRecurring && task?.scheduledDay && (
+            <Typography
+              mt={1}
+              mb={1}
+              variant={"subtitle1"}
+              color="text.secondary"
+            >
+              Due{" "}
+              {formatRelative(new Date(task.scheduledDay), new Date(), {
+                locale,
+              })}
+            </Typography>
+          )}
           {showCompletionStats && task?.isRecurring && (
             <Typography mt={1} variant={"body1"} color="text.secondary">
               Number of times completed: {taskCompletions || 0}

@@ -1,20 +1,18 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { CalendarContainer } from "./styles";
 import CalendarColumn from "components/molecules/CalendarColumn/CalendarColumn";
-import FloatingAddButton from "components/atoms/FloatingAddButton/FloatingAddButton";
 import { DaysOfWeek, Task } from "models/Task";
-import AddTaskModal from "../../components/organisms/AddTaskModal/AddTaskModal";
 import { useGetTasksQuery } from "api/TasksApi";
 import PageLoader from "../../components/atoms/PageLoader/PageLoader";
 import { useGetTaskOrdersQuery } from "api/OrderApi";
 import { Box } from "@mui/material";
+import { format } from "date-fns";
 
 const Plan = () => {
-  const [showAddTaskModal, setShowAddTaskModal] = useState<boolean>(false);
   const { isLoading, data: taskData } = useGetTasksQuery();
   const { data: taskOrderData } = useGetTaskOrdersQuery();
 
-  const getTasksForColumn = useCallback(
+  const sortTasksToDayOfWeek = useCallback(
     (key: DaysOfWeek) => {
       const getSortOrder = (task: Task, dayOfWeek: DaysOfWeek) => {
         const orderData = taskOrderData?.find?.((order) => {
@@ -24,7 +22,15 @@ const Plan = () => {
       };
 
       return taskData
-        ?.filter?.((task) => task?.daysOfWeek?.some((day) => day === key))
+        ?.filter?.((task) => {
+          if (task?.daysOfWeek?.some((day) => day === key)) {
+            return true;
+          } else
+            return (
+              task.scheduledDay &&
+              key === DaysOfWeek[format(new Date(task.scheduledDay), "eeee")]
+            );
+        })
         .sort((taskA, taskB) => {
           const taskASortOrder = getSortOrder(taskA, key);
           const taskBSortOrder = getSortOrder(taskB, key);
@@ -43,40 +49,34 @@ const Plan = () => {
         <Box sx={{ display: "flex", width: "100%", gap: 1 }} p={1}>
           <CalendarColumn
             header="Monday"
-            taskList={getTasksForColumn(DaysOfWeek.Monday)}
+            taskList={sortTasksToDayOfWeek(DaysOfWeek.Monday)}
           />
           <CalendarColumn
             header="Tuesday"
-            taskList={getTasksForColumn(DaysOfWeek.Tuesday)}
+            taskList={sortTasksToDayOfWeek(DaysOfWeek.Tuesday)}
           />
           <CalendarColumn
             header="Wednesday"
-            taskList={getTasksForColumn(DaysOfWeek.Wednesday)}
+            taskList={sortTasksToDayOfWeek(DaysOfWeek.Wednesday)}
           />
           <CalendarColumn
             header="Thursday"
-            taskList={getTasksForColumn(DaysOfWeek.Thursday)}
+            taskList={sortTasksToDayOfWeek(DaysOfWeek.Thursday)}
           />
           <CalendarColumn
             header="Friday"
-            taskList={getTasksForColumn(DaysOfWeek.Friday)}
+            taskList={sortTasksToDayOfWeek(DaysOfWeek.Friday)}
           />
           <CalendarColumn
             header="Saturday"
-            taskList={getTasksForColumn(DaysOfWeek.Saturday)}
+            taskList={sortTasksToDayOfWeek(DaysOfWeek.Saturday)}
           />
           <CalendarColumn
             header="Sunday"
-            taskList={getTasksForColumn(DaysOfWeek.Sunday)}
+            taskList={sortTasksToDayOfWeek(DaysOfWeek.Sunday)}
           />
         </Box>
       )}
-
-      <FloatingAddButton onClick={() => setShowAddTaskModal(true)} />
-      <AddTaskModal
-        show={showAddTaskModal}
-        closeModal={() => setShowAddTaskModal(false)}
-      />
     </CalendarContainer>
   );
 };
