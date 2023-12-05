@@ -90,59 +90,61 @@ const Act = () => {
     <Box p={1} sx={{ width: "100%", height: "100%" }}>
       {isLoading || isTaskBlockDataLoading || isTaskOrderDataLoading ? (
         <PageLoader />
-      ) : !currentTaskList?.length ? (
-        <Typography>Nothing for today.</Typography>
       ) : (
         <Box m={3}>
           <Typography variant="h6" gutterBottom>
             Here is the outline for today:
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
-          >
-            <ReactSortable
-              animation={150}
-              list={currentTaskList || []}
-              setList={(updatedTaskList) => saveSortOrder(updatedTaskList)}
+          {!currentTaskList?.length ? (
+            <Typography variant={"subtitle1"}>Nothing for today.</Typography>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+              }}
             >
-              {currentTaskList?.map((task) => (
-                <Box
-                  key={task.id}
-                  sx={{
-                    display: "flex",
-                    width: "100%",
-                    height: "fit-content",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
-                  }}
-                >
-                  <CurrentCard
-                    task={task}
-                    taskBlock={taskBlockData?.find(
-                      (block) =>
-                        block.taskId === task.id &&
-                        block.dayOfWeek === DaysOfWeek[currentDay],
-                    )}
-                  />
-                  {!!task.duration && (
-                    <PomodoroTracker
+              <ReactSortable
+                animation={150}
+                list={currentTaskList || []}
+                setList={(updatedTaskList) => saveSortOrder(updatedTaskList)}
+              >
+                {currentTaskList?.map((task) => (
+                  <Box
+                    key={task.id}
+                    sx={{
+                      display: "flex",
+                      width: "100%",
+                      height: "fit-content",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                    }}
+                  >
+                    <CurrentCard
                       task={task}
                       taskBlock={taskBlockData?.find(
                         (block) =>
                           block.taskId === task.id &&
                           block.dayOfWeek === DaysOfWeek[currentDay],
                       )}
-                      durationInMinutes={task.duration}
                     />
-                  )}
-                </Box>
-              ))}
-            </ReactSortable>
-          </Box>
+                    {!!task.duration && (
+                      <PomodoroTracker
+                        task={task}
+                        taskBlock={taskBlockData?.find(
+                          (block) =>
+                            block.taskId === task.id &&
+                            block.dayOfWeek === DaysOfWeek[currentDay],
+                        )}
+                        durationInMinutes={task.duration}
+                      />
+                    )}
+                  </Box>
+                ))}
+              </ReactSortable>
+            </Box>
+          )}
         </Box>
       )}
     </Box>
