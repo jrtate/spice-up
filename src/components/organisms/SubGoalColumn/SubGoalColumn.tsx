@@ -67,6 +67,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        width: "15rem",
       }}
     >
       <ConfirmationModal
@@ -88,6 +89,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
           alignItems: "center",
           justifyContent: "center",
           width: "100%",
+          height: "4rem",
           marginBottom: 4,
         }}
       >
@@ -97,6 +99,9 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
             sx={{
               marginRight: 1,
               textDecoration: subGoal?.isCompleted ? "line-through" : "none",
+              maxWidth: "8rem",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
             }}
             variant="h6"
           >
@@ -113,6 +118,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
             onChange={(e) => {
               setDescription(e.target.value);
             }}
+            inputProps={{ maxLength: 50 }}
           />
         )}
         {isSubGoalCreated && !isEditing ? (

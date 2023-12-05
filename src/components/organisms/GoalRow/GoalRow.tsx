@@ -134,6 +134,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
             onChange={(e) => {
               setDescription(e.target.value);
             }}
+            inputProps={{ maxLength: 50 }}
           />
         )}
         {isGoalCreated && !isEditing ? (

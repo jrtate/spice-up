@@ -78,6 +78,7 @@ const TaskModalFrame = ({
             onChange={(e) => setDescription(e.target.value)}
             required
             fullWidth
+            inputProps={{ maxLength: 50 }}
           />
           <TextField
             label="Duration (in minutes)"
