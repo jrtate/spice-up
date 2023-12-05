@@ -28,7 +28,7 @@ export const useLoginMutation = (navigate, handleSetShowToast) =>
       sessionStorage.setItem("refreshToken", refreshToken);
       sessionStorage.setItem("email", email);
       api.defaults.headers.common = { Authorization: `Bearer ${token}` };
-      navigate("/brainstorm");
+      navigate("/plan");
     },
     onError: (error) => {
       handleSetShowToast(error.message);

@@ -61,10 +61,10 @@ const Page = ({ children }: any) => {
               }}
             >
               <Tooltip title="Plan" placement="right">
-                <Link to="/brainstorm">
-                  <Paper elevation={path === "/brainstorm" ? 3 : 0}>
+                <Link to="/plan">
+                  <Paper elevation={path === "/plan" ? 3 : 0}>
                     <IconButton
-                      onClick={() => setPath("/brainstorm")}
+                      onClick={() => setPath("/plan")}
                       color="primary"
                     >
                       <EmojiObjectsIcon />
@@ -74,10 +74,10 @@ const Page = ({ children }: any) => {
               </Tooltip>
 
               <Tooltip title="Arrange" placement="right">
-                <Link to="/plan">
-                  <Paper elevation={path === "/plan" ? 3 : 0}>
+                <Link to="/arrange">
+                  <Paper elevation={path === "/arrange" ? 3 : 0}>
                     <IconButton
-                      onClick={() => setPath("/plan")}
+                      onClick={() => setPath("/arrange")}
                       color="primary"
                     >
                       <EditCalendarIcon />
