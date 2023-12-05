@@ -87,16 +87,11 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
               variant={"subtitle1"}
               color="text.secondary"
             >
-              Duration: {duration}.
+              {duration}
             </Typography>
           )}
           {!task?.isRecurring && task?.scheduledDay && (
-            <Typography
-              mt={1}
-              mb={1}
-              variant={"subtitle1"}
-              color="text.secondary"
-            >
+            <Typography mt={1} mb={1} variant={"body2"} color="text.secondary">
               Due{" "}
               {formatRelative(new Date(task.scheduledDay), new Date(), {
                 locale,
@@ -104,8 +99,8 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
             </Typography>
           )}
           {showCompletionStats && task?.isRecurring && (
-            <Typography mt={1} variant={"body1"} color="text.secondary">
-              Number of times completed: {taskCompletions || 0}
+            <Typography mt={1} variant={"body2"} color="text.secondary">
+              Completions: {taskCompletions || 0}
             </Typography>
           )}
         </CardContent>

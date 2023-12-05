@@ -93,6 +93,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
       >
         {!isEditing && isSubGoalCreated && (
           <Typography
+            color={"#f5f5f5"}
             sx={{
               marginRight: 1,
               textDecoration: subGoal?.isCompleted ? "line-through" : "none",

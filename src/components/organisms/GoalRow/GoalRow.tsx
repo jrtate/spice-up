@@ -95,7 +95,12 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
       />
 
       {!isGoalCreated && (
-        <Typography marginBottom={3} variant="h5" gutterBottom>
+        <Typography
+          color={"#f5f5f5"}
+          marginBottom={3}
+          variant="h5"
+          gutterBottom
+        >
           Set a goal:
         </Typography>
       )}
@@ -108,6 +113,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
       >
         {!isEditing && isGoalCreated && (
           <Typography
+            color={"#f5f5f5"}
             sx={{
               marginRight: 1,
               textDecoration: goal?.isCompleted ? "line-through" : "none",
@@ -215,7 +221,12 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
         >
           {!goal?.subGoals?.length && (
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Typography sx={{ maxWidth: 900 }} marginBottom={2} variant="h6">
+              <Typography
+                color={"#f5f5f5"}
+                sx={{ maxWidth: 900 }}
+                marginBottom={2}
+                variant="h6"
+              >
                 Break down "{goal?.description}" into essential sub-goals:
               </Typography>
             </Box>
