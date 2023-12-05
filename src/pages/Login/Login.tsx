@@ -36,7 +36,7 @@ const Login = () => {
           fullWidth
         />
         <TextField
-          sx={{ mt: 1 }}
+          sx={{ mt: 3 }}
           label="Password"
           variant="standard"
           value={password}
@@ -51,7 +51,7 @@ const Login = () => {
             display: "flex",
             justifyContent: "space-between",
           }}
-          mt={10}
+          mt={8}
         >
           <Link to="/signup">
             <Button onClick={() => {}}>New User? Sign up here!</Button>

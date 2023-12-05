@@ -1,83 +1,43 @@
-import React, { useCallback } from "react";
-import { CalendarContainer } from "./styles";
-import CalendarColumn from "components/molecules/CalendarColumn/CalendarColumn";
-import { DaysOfWeek, Task } from "models/Task";
-import { useGetTasksQuery } from "api/TasksApi";
+import React, { useState } from "react";
+import { Box, Fab, Tooltip } from "@mui/material";
 import PageLoader from "../../components/atoms/PageLoader/PageLoader";
-import { useGetTaskOrdersQuery } from "api/OrderApi";
-import { Box } from "@mui/material";
-import { format } from "date-fns";
+import GoalRow from "../../components/organisms/GoalRow/GoalRow";
+import AddIcon from "@mui/icons-material/Add";
+import { useGetGoalsQuery } from "../../api/GoalsApi";
 
 const Plan = () => {
-  const { isLoading, data: taskData } = useGetTasksQuery();
-  const { data: taskOrderData } = useGetTaskOrdersQuery();
+  const { data: goals, isLoading } = useGetGoalsQuery();
+  const [blankGoals, setBlankGoals] = useState<number[]>([]);
 
-  const sortTasksToDayOfWeek = useCallback(
-    (key: DaysOfWeek) => {
-      const getSortOrder = (task: Task, dayOfWeek: DaysOfWeek) => {
-        const orderData = taskOrderData?.find?.((order) => {
-          return order.dayOfWeek === dayOfWeek && order.taskId === task.id;
-        });
-        return orderData?.order;
-      };
+  return isLoading ? (
+    <PageLoader />
+  ) : (
+    <Box p={1}>
+      {goals?.map?.((goal) => <GoalRow key={goal?.id} goal={goal} />)}
 
-      return taskData
-        ?.filter?.((task) => {
-          if (task?.daysOfWeek?.some((day) => day === key)) {
-            return true;
-          } else
-            return (
-              task.scheduledDay &&
-              key === DaysOfWeek[format(new Date(task.scheduledDay), "eeee")]
-            );
-        })
-        .sort((taskA, taskB) => {
-          const taskASortOrder = getSortOrder(taskA, key);
-          const taskBSortOrder = getSortOrder(taskB, key);
-
-          return taskASortOrder - taskBSortOrder;
-        });
-    },
-    [taskData, taskOrderData],
-  );
-
-  return (
-    <CalendarContainer>
-      {isLoading ? (
-        <PageLoader />
+      {!goals?.length ? (
+        <GoalRow />
       ) : (
-        <Box sx={{ display: "flex", width: "100%", gap: 1 }} p={1}>
-          <CalendarColumn
-            header="Monday"
-            taskList={sortTasksToDayOfWeek(DaysOfWeek.Monday)}
-          />
-          <CalendarColumn
-            header="Tuesday"
-            taskList={sortTasksToDayOfWeek(DaysOfWeek.Tuesday)}
-          />
-          <CalendarColumn
-            header="Wednesday"
-            taskList={sortTasksToDayOfWeek(DaysOfWeek.Wednesday)}
-          />
-          <CalendarColumn
-            header="Thursday"
-            taskList={sortTasksToDayOfWeek(DaysOfWeek.Thursday)}
-          />
-          <CalendarColumn
-            header="Friday"
-            taskList={sortTasksToDayOfWeek(DaysOfWeek.Friday)}
-          />
-          <CalendarColumn
-            header="Saturday"
-            taskList={sortTasksToDayOfWeek(DaysOfWeek.Saturday)}
-          />
-          <CalendarColumn
-            header="Sunday"
-            taskList={sortTasksToDayOfWeek(DaysOfWeek.Sunday)}
-          />
-        </Box>
+        blankGoals?.map((i) => (
+          <GoalRow key={i} onSaveGoal={() => setBlankGoals([])} />
+        ))
       )}
-    </CalendarContainer>
+
+      <Box
+        marginTop={2}
+        sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+      >
+        <Tooltip title="Add New Goal" placement="top">
+          <Fab
+            disabled={blankGoals.length === 1}
+            color="primary"
+            onClick={() => setBlankGoals([1])}
+          >
+            <AddIcon />
+          </Fab>
+        </Tooltip>
+      </Box>
+    </Box>
   );
 };
 

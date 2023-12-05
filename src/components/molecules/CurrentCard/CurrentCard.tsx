@@ -109,7 +109,7 @@ const CurrentCard = ({ task, taskBlock }: CurrentCardProps) => {
       />
 
       <StyledCard>
-        <CardContent>
+        <CardContent sx={{ backgroundColor: "rgb(20 20 20)" }}>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             {task.isRecurring ? "Re-occurring" : "One-time"} Task
           </Typography>
@@ -121,12 +121,18 @@ const CurrentCard = ({ task, taskBlock }: CurrentCardProps) => {
             {task.description}
           </Typography>
           {!!duration && (
-            <Typography mt={1} mb={-2} color="text.secondary">
+            <Typography
+              mt={1}
+              mb={-2}
+              variant={"subtitle1"}
+              color="text.secondary"
+              sx={{ fontWeight: "bold" }}
+            >
               {duration}
             </Typography>
           )}
         </CardContent>
-        <CardActions>
+        <CardActions sx={{ backgroundColor: "rgb(20 20 20)" }}>
           <Box
             sx={{
               display: "flex",

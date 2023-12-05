@@ -67,6 +67,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        width: "15rem",
       }}
     >
       <ConfirmationModal
@@ -86,18 +87,23 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
         sx={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "flex-start",
+          justifyContent: "center",
           width: "100%",
-          marginBottom: 1,
+          height: "4rem",
+          marginBottom: 4,
         }}
       >
         {!isEditing && isSubGoalCreated && (
           <Typography
+            color={"#f5f5f5"}
             sx={{
               marginRight: 1,
               textDecoration: subGoal?.isCompleted ? "line-through" : "none",
+              maxWidth: "8rem",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
             }}
-            variant="subtitle1"
+            variant="h6"
           >
             {description}
           </Typography>
@@ -112,6 +118,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
             onChange={(e) => {
               setDescription(e.target.value);
             }}
+            inputProps={{ maxLength: 50 }}
           />
         )}
         {isSubGoalCreated && !isEditing ? (
@@ -123,6 +130,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
         ) : (
           <Tooltip title="Save Sub-goal">
             <IconButton
+              disabled={!description}
               onClick={() => {
                 if (isSubGoalCreated) {
                   editSubGoal.mutate({ id: subGoal?.id, description });

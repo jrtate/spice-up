@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
-import Plan from "pages/Plan/Plan";
+import Arrange from "pages/Arrange/Arrange";
 import Act from "../Act/Act";
 import SignUp from "../SignUp/SignUp";
 import Login from "../Login/Login";
@@ -8,7 +8,7 @@ import Page from "../../components/organisms/Page/Page";
 import ProtectedRoute from "../../components/organisms/ProtectedRoute/ProtectedRoute";
 import axios from "axios";
 import { isTokenValid } from "../../utils/tokenValidation";
-import Brainstorm from "../Brainstorm/Brainstorm";
+import Plan from "../Plan/Plan";
 
 const Home = () => {
   useEffect(() => {
@@ -22,18 +22,18 @@ const Home = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route
-          path="/brainstorm"
-          element={
-            <ProtectedRoute>
-              <Page children={<Brainstorm />} />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/plan"
           element={
             <ProtectedRoute>
               <Page children={<Plan />} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/arrange"
+          element={
+            <ProtectedRoute>
+              <Page children={<Arrange />} />
             </ProtectedRoute>
           }
         />
@@ -48,9 +48,7 @@ const Home = () => {
 
         <Route
           index
-          element={
-            <Navigate to={isTokenValid() ? "/brainstorm" : "login"} replace />
-          }
+          element={<Navigate to={isTokenValid() ? "/plan" : "login"} replace />}
         />
       </Routes>
     </>

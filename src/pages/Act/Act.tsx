@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { format } from "date-fns";
+import { format, getDay, getWeek, getYear } from "date-fns";
 import { useGetTasksQuery } from "../../api/TasksApi";
 import { DaysOfWeek, Task } from "../../models/Task";
 import PageLoader from "components/atoms/PageLoader/PageLoader";
@@ -45,6 +45,15 @@ const Act = () => {
             matchingTask = task;
           }
         });
+        const scheduleDay = `${getYear(new Date(task?.scheduledDay))}-${getWeek(
+          new Date(task?.scheduledDay),
+        )}-${getDay(new Date(task?.scheduledDay))}`;
+        const today = `${getYear(new Date())}-${getWeek(new Date())}-${getDay(
+          new Date(),
+        )}`;
+        if (scheduleDay === today) {
+          matchingTask = task;
+        }
 
         if (matchingTask) {
           return matchingTask;
@@ -86,52 +95,56 @@ const Act = () => {
           <Typography variant="h6" gutterBottom>
             Here is the outline for today:
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
-          >
-            <ReactSortable
-              animation={150}
-              list={currentTaskList || []}
-              setList={(updatedTaskList) => saveSortOrder(updatedTaskList)}
+          {!currentTaskList?.length ? (
+            <Typography variant={"subtitle1"}>Nothing for today.</Typography>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+              }}
             >
-              {currentTaskList?.map((task) => (
-                <Box
-                  key={task.id}
-                  sx={{
-                    display: "flex",
-                    width: "100%",
-                    height: "fit-content",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
-                  }}
-                >
-                  <CurrentCard
-                    task={task}
-                    taskBlock={taskBlockData?.find(
-                      (block) =>
-                        block.taskId === task.id &&
-                        block.dayOfWeek === DaysOfWeek[currentDay],
-                    )}
-                  />
-                  {!!task.duration && (
-                    <PomodoroTracker
+              <ReactSortable
+                animation={150}
+                list={currentTaskList || []}
+                setList={(updatedTaskList) => saveSortOrder(updatedTaskList)}
+              >
+                {currentTaskList?.map((task) => (
+                  <Box
+                    key={task.id}
+                    sx={{
+                      display: "flex",
+                      width: "100%",
+                      height: "fit-content",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                    }}
+                  >
+                    <CurrentCard
                       task={task}
                       taskBlock={taskBlockData?.find(
                         (block) =>
                           block.taskId === task.id &&
                           block.dayOfWeek === DaysOfWeek[currentDay],
                       )}
-                      durationInMinutes={task.duration}
                     />
-                  )}
-                </Box>
-              ))}
-            </ReactSortable>
-          </Box>
+                    {!!task.duration && (
+                      <PomodoroTracker
+                        task={task}
+                        taskBlock={taskBlockData?.find(
+                          (block) =>
+                            block.taskId === task.id &&
+                            block.dayOfWeek === DaysOfWeek[currentDay],
+                        )}
+                        durationInMinutes={task.duration}
+                      />
+                    )}
+                  </Box>
+                ))}
+              </ReactSortable>
+            </Box>
+          )}
         </Box>
       )}
     </Box>

@@ -78,7 +78,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "flex-start",
+        alignItems: "center",
       }}
     >
       <ConfirmationModal
@@ -94,28 +94,31 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
         confirmButtonText={"Delete Goal"}
       />
 
-      <Typography
-        color={"text.secondary"}
-        marginBottom={3}
-        variant="h5"
-        gutterBottom
-      >
-        {isGoalCreated ? "Goal:" : "Set a goal:"}
-      </Typography>
+      {!isGoalCreated && (
+        <Typography
+          color={"#f5f5f5"}
+          marginBottom={3}
+          variant="h5"
+          gutterBottom
+        >
+          Set a goal:
+        </Typography>
+      )}
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
-          marginBottom: 4,
+          marginBottom: 2,
         }}
       >
         {!isEditing && isGoalCreated && (
           <Typography
+            color={"#f5f5f5"}
             sx={{
               marginRight: 1,
               textDecoration: goal?.isCompleted ? "line-through" : "none",
             }}
-            variant="h6"
+            variant="h5"
           >
             {description}
           </Typography>
@@ -131,6 +134,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
             onChange={(e) => {
               setDescription(e.target.value);
             }}
+            inputProps={{ maxLength: 50 }}
           />
         )}
         {isGoalCreated && !isEditing ? (
@@ -142,6 +146,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
         ) : (
           <Tooltip title="Save Goal">
             <IconButton
+              disabled={!description}
               onClick={() => {
                 if (isGoalCreated) {
                   editGoal.mutate({ id: goal?.id, description });
@@ -192,11 +197,14 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
             width: "100%",
             maxWidth: "35rem",
             textWrap: "nowrap",
-            marginBottom: "2rem",
           }}
         >
           <Box sx={{ width: "100%", mr: 1 }}>
-            <LinearProgress variant="determinate" value={currentGoalProgress} />
+            <LinearProgress
+              sx={{ height: "10px", borderRadius: "4px" }}
+              variant="determinate"
+              value={currentGoalProgress}
+            />
           </Box>
           <Box sx={{ minWidth: 35 }}>
             <Typography
@@ -208,19 +216,22 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
       )}
 
       {isGoalCreated && (
-        <Box>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Typography
-              color={"text.secondary"}
-              sx={{ maxWidth: 900 }}
-              marginBottom={2}
-              variant="h6"
-            >
-              {goal?.subGoals?.length > 0
-                ? "Sub-goals:"
-                : "Break down the main goal into essential sub-goals:"}
-            </Typography>
-          </Box>
+        <Box
+          mt={8}
+          sx={{ display: "flex", justifyContent: "flex-start", width: "100%" }}
+        >
+          {!goal?.subGoals?.length && (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography
+                color={"#f5f5f5"}
+                sx={{ maxWidth: 900 }}
+                marginBottom={2}
+                variant="h6"
+              >
+                Break down "{goal?.description}" into essential sub-goals:
+              </Typography>
+            </Box>
+          )}
           <Box
             sx={{
               display: "flex",
