@@ -100,7 +100,8 @@ const PomodoroCell = ({
           sx={{
             minWidth: 150,
             backgroundColor: disabled ? "#5a5a5a" : "",
-            height: ".25rem",
+            height: "10px",
+            borderRadius: "4px",
           }}
           variant="determinate"
           value={

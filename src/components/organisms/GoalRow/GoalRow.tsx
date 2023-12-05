@@ -78,7 +78,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "flex-start",
+        alignItems: "center",
       }}
     >
       <ConfirmationModal
@@ -193,7 +193,11 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
           }}
         >
           <Box sx={{ width: "100%", mr: 1 }}>
-            <LinearProgress variant="determinate" value={currentGoalProgress} />
+            <LinearProgress
+              sx={{ height: "10px", borderRadius: "4px" }}
+              variant="determinate"
+              value={currentGoalProgress}
+            />
           </Box>
           <Box sx={{ minWidth: 35 }}>
             <Typography
@@ -217,6 +221,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
             sx={{
               display: "flex",
               justifyContent: "flex-start",
+              width: "100%",
               gap: 4,
             }}
           >
