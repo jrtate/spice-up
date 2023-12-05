@@ -103,7 +103,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
         sx={{
           display: "flex",
           alignItems: "center",
-          marginBottom: 4,
+          marginBottom: 2,
         }}
       >
         {!isEditing && isGoalCreated && (
@@ -112,7 +112,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
               marginRight: 1,
               textDecoration: goal?.isCompleted ? "line-through" : "none",
             }}
-            variant="h6"
+            variant="h5"
           >
             {description}
           </Typography>
@@ -139,6 +139,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
         ) : (
           <Tooltip title="Save Goal">
             <IconButton
+              disabled={!description}
               onClick={() => {
                 if (isGoalCreated) {
                   editGoal.mutate({ id: goal?.id, description });
@@ -189,7 +190,6 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
             width: "100%",
             maxWidth: "35rem",
             textWrap: "nowrap",
-            marginBottom: "2rem",
           }}
         >
           <Box sx={{ width: "100%", mr: 1 }}>
@@ -209,7 +209,10 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
       )}
 
       {isGoalCreated && (
-        <Box>
+        <Box
+          mt={8}
+          sx={{ display: "flex", justifyContent: "flex-start", width: "100%" }}
+        >
           {!goal?.subGoals?.length && (
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography sx={{ maxWidth: 900 }} marginBottom={2} variant="h6">
@@ -221,7 +224,6 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
             sx={{
               display: "flex",
               justifyContent: "flex-start",
-              width: "100%",
               gap: 4,
             }}
           >

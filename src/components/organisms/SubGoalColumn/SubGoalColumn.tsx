@@ -86,9 +86,9 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
         sx={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "flex-start",
+          justifyContent: "center",
           width: "100%",
-          marginBottom: 1,
+          marginBottom: 4,
         }}
       >
         {!isEditing && isSubGoalCreated && (
@@ -97,7 +97,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
               marginRight: 1,
               textDecoration: subGoal?.isCompleted ? "line-through" : "none",
             }}
-            variant="subtitle1"
+            variant="h6"
           >
             {description}
           </Typography>
@@ -123,6 +123,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
         ) : (
           <Tooltip title="Save Sub-goal">
             <IconButton
+              disabled={!description}
               onClick={() => {
                 if (isSubGoalCreated) {
                   editSubGoal.mutate({ id: subGoal?.id, description });
