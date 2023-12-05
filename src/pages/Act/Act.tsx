@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { format } from "date-fns";
+import { format, getDay, getWeek, getYear } from "date-fns";
 import { useGetTasksQuery } from "../../api/TasksApi";
 import { DaysOfWeek, Task } from "../../models/Task";
 import PageLoader from "components/atoms/PageLoader/PageLoader";
@@ -45,6 +45,15 @@ const Act = () => {
             matchingTask = task;
           }
         });
+        const scheduleDay = `${getYear(new Date(task?.scheduledDay))}-${getWeek(
+          new Date(task?.scheduledDay),
+        )}-${getDay(new Date(task?.scheduledDay))}`;
+        const today = `${getYear(new Date())}-${getWeek(new Date())}-${getDay(
+          new Date(),
+        )}`;
+        if (scheduleDay === today) {
+          matchingTask = task;
+        }
 
         if (matchingTask) {
           return matchingTask;
@@ -81,6 +90,8 @@ const Act = () => {
     <Box p={1} sx={{ width: "100%", height: "100%" }}>
       {isLoading || isTaskBlockDataLoading || isTaskOrderDataLoading ? (
         <PageLoader />
+      ) : !currentTaskList?.length ? (
+        <Typography>Nothing for today.</Typography>
       ) : (
         <Box m={3}>
           <Typography variant="h6" gutterBottom>
