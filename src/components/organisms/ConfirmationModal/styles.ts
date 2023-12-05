@@ -7,6 +7,6 @@ export const ModalContainer = styled(Box)`
   left: 50%;
   transform: translate(-50%, -50%);
   width: 450px;
-  background-color: #272727;
+  background-color: rgb(20 20 20);
   border: 1px solid #ffffff;
 `;

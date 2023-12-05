@@ -94,14 +94,11 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
         confirmButtonText={"Delete Goal"}
       />
 
-      <Typography
-        color={"text.secondary"}
-        marginBottom={3}
-        variant="h5"
-        gutterBottom
-      >
-        {isGoalCreated ? "Goal:" : "Set a goal:"}
-      </Typography>
+      {!isGoalCreated && (
+        <Typography marginBottom={3} variant="h5" gutterBottom>
+          Set a goal:
+        </Typography>
+      )}
       <Box
         sx={{
           display: "flex",
@@ -209,18 +206,13 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
 
       {isGoalCreated && (
         <Box>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Typography
-              color={"text.secondary"}
-              sx={{ maxWidth: 900 }}
-              marginBottom={2}
-              variant="h6"
-            >
-              {goal?.subGoals?.length > 0
-                ? "Sub-goals:"
-                : "Break down the main goal into essential sub-goals:"}
-            </Typography>
-          </Box>
+          {!goal?.subGoals?.length && (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography sx={{ maxWidth: 900 }} marginBottom={2} variant="h6">
+                Break down "{goal?.description}" into essential sub-goals:
+              </Typography>
+            </Box>
+          )}
           <Box
             sx={{
               display: "flex",

@@ -69,16 +69,25 @@ const CalendarColumn = ({ header, taskList }: CalendarColumnProps) => {
         sx={{
           width: "100%",
           textAlign: "center",
-          bgcolor: "#272727",
           borderRadius: "2px",
           padding: 1,
           border: `1px solid ${
-            format(new Date(), "eeee") === header ? "#f2f2f2" : "transparent"
+            format(new Date(), "eeee") === header
+              ? "#f5f5f5"
+              : "rgba(255, 255, 255, 0.12)"
           }`,
+          backgroundColor: "rgb(20 20 20)",
         }}
       >
         <CalendarHeader label={header} />
-        <Typography>{format(getDate(), "MM-dd")}</Typography>
+        <Typography
+          sx={{
+            fontStyle: "italic",
+            color: "rgba(255, 255, 255, 0.7)",
+          }}
+        >
+          {format(getDate(), "MM-dd")}
+        </Typography>
       </Box>
       <ReactSortable
         animation={150}

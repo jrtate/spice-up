@@ -73,7 +73,7 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
       />
 
       <StyledCard>
-        <CardContent sx={{ height: "100%" }}>
+        <CardContent sx={{ height: "100%", backgroundColor: "rgb(20 20 20)" }}>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             {task.isRecurring ? "Re-occurring" : "One-time"} Task
           </Typography>
@@ -114,6 +114,7 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
             display: "flex",
             justifyContent: "flex-end",
             alignItems: "flex-end",
+            backgroundColor: "rgb(20 20 20)",
           }}
         >
           <Button size="small" onClick={() => setShowEditTaskModal(true)}>

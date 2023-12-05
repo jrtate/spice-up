@@ -49,6 +49,7 @@ const Page = ({ children }: any) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
+              backgroundColor: "rgb(20 20 20)",
             }}
           >
             <Box

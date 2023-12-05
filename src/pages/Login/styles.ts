@@ -8,6 +8,6 @@ export const LoginContainer = styled(Box)`
   transform: translate(-50%, -50%);
   height: 20rem;
   width: 25rem;
-  background-color: #272727;
+  background-color: rgb(20 20 20);
   border: 1px solid #ffffff;
 `;
