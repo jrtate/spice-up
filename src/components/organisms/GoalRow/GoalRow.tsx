@@ -192,89 +192,85 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
         )}
       </Box>
 
-      {!shouldCollapse && (
-        <>
-          {isGoalCreated && goal?.subGoals?.length > 0 && (
-            <Typography variant="subtitle1" color="text.secondary">
-              Current Progress:
-            </Typography>
-          )}
-          {isGoalCreated && goal?.subGoals?.length > 0 && (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                width: "100%",
-                maxWidth: "35rem",
-                textWrap: "nowrap",
-              }}
-            >
-              <Box sx={{ width: "100%", mr: 1 }}>
-                <LinearProgress
-                  sx={{ height: "10px", borderRadius: "4px" }}
-                  variant="determinate"
-                  value={currentGoalProgress}
-                />
-              </Box>
-              <Box sx={{ minWidth: 35 }}>
-                <Typography
-                  variant="subtitle1"
-                  color="text.secondary"
-                >{`${currentGoalProgress}%`}</Typography>
-              </Box>
+      {isGoalCreated && goal?.subGoals?.length > 0 && (
+        <Typography variant="subtitle1" color="text.secondary">
+          Current Progress:
+        </Typography>
+      )}
+      {isGoalCreated && goal?.subGoals?.length > 0 && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            width: "100%",
+            maxWidth: "35rem",
+            textWrap: "nowrap",
+          }}
+        >
+          <Box sx={{ width: "100%", mr: 1 }}>
+            <LinearProgress
+              sx={{ height: "10px", borderRadius: "4px" }}
+              variant="determinate"
+              value={currentGoalProgress}
+            />
+          </Box>
+          <Box sx={{ minWidth: 35 }}>
+            <Typography
+              variant="subtitle1"
+              color="text.secondary"
+            >{`${currentGoalProgress}%`}</Typography>
+          </Box>
+        </Box>
+      )}
+
+      {isGoalCreated && !shouldCollapse && (
+        <Box
+          mt={8}
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            width: "100%",
+          }}
+        >
+          {!goal?.subGoals?.length && (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography
+                color={"#f5f5f5"}
+                sx={{ maxWidth: 900 }}
+                marginBottom={2}
+                variant="h6"
+              >
+                Break down "{goal?.description}" into essential sub-goals:
+              </Typography>
             </Box>
           )}
-
-          {isGoalCreated && (
-            <Box
-              mt={8}
-              sx={{
-                display: "flex",
-                justifyContent: "flex-start",
-                width: "100%",
-              }}
-            >
-              {!goal?.subGoals?.length && (
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography
-                    color={"#f5f5f5"}
-                    sx={{ maxWidth: 900 }}
-                    marginBottom={2}
-                    variant="h6"
-                  >
-                    Break down "{goal?.description}" into essential sub-goals:
-                  </Typography>
-                </Box>
-              )}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+              gap: 4,
+            }}
+          >
+            {goal?.subGoals?.map((subGoal) => (
               <Box
+                key={subGoal?.id}
                 sx={{
                   display: "flex",
                   justifyContent: "flex-start",
                   gap: 4,
                 }}
               >
-                {goal?.subGoals?.map((subGoal) => (
-                  <Box
-                    key={subGoal?.id}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "flex-start",
-                      gap: 4,
-                    }}
-                  >
-                    <SubGoalColumn goalId={goal.id} subGoal={subGoal} />
-                    <Divider
-                      orientation="vertical"
-                      sx={{ width: "1px", height: "100%" }}
-                      variant="middle"
-                    />
-                  </Box>
-                ))}
-                <SubGoalColumn goalId={goal?.id} />
+                <SubGoalColumn goalId={goal.id} subGoal={subGoal} />
+                <Divider
+                  orientation="vertical"
+                  sx={{ width: "1px", height: "100%" }}
+                  variant="middle"
+                />
               </Box>
-            </Box>
-          )}
-        </>
+            ))}
+            <SubGoalColumn goalId={goal?.id} />
+          </Box>
+        </Box>
       )}
       <Divider
         sx={{ height: 1, width: "100%", marginTop: 12 }}
