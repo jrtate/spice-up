@@ -80,6 +80,9 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
           <Typography
             variant="h6"
             component="div"
+            color={
+              task.isCompleted && !task.isRecurring ? "primary" : "default"
+            }
             sx={
               task.isCompleted && !task.isRecurring
                 ? { textDecoration: "line-through" }

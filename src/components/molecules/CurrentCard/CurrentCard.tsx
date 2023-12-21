@@ -118,6 +118,7 @@ const CurrentCard = ({ task, taskBlock }: CurrentCardProps) => {
           <Typography
             variant="h5"
             component="div"
+            color={task.isCompleted ? "primary" : "default"}
             sx={task.isCompleted ? { textDecoration: "line-through" } : {}}
           >
             {task.description}
