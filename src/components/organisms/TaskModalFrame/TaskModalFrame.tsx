@@ -248,12 +248,7 @@ const TaskModalFrame = ({
           <LoadingButton
             loading={isLoading}
             onClick={() => handleSaveTask()}
-            disabled={
-              (checkedDays.length === 0 && !isRandom && isRecurring) ||
-              isLoading ||
-              !description ||
-              (!isRecurring && !scheduledDay)
-            }
+            disabled={isLoading || !description}
           >
             Save
           </LoadingButton>

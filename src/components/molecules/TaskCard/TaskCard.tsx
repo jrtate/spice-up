@@ -118,7 +118,7 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
               })}`}
             </Typography>
           )}
-          {showCompletionStats && task?.isRecurring && (
+          {showCompletionStats && task.daysOfWeek.length > 0 && (
             <Typography
               mt={1}
               variant={"body2"}
@@ -126,6 +126,16 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
               sx={{ fontStyle: "italic" }}
             >
               Completions: {taskCompletions || 0}
+            </Typography>
+          )}
+          {!task.daysOfWeek.length && !task.scheduledDay && (
+            <Typography
+              mt={1}
+              variant={"body2"}
+              color="#f44336"
+              sx={{ fontStyle: "italic" }}
+            >
+              Unassigned
             </Typography>
           )}
         </CardContent>
