@@ -6,7 +6,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useGetGoalsQuery } from "../../api/GoalsApi";
 
 const Plan = () => {
-  const { data: goals, isLoading } = useGetGoalsQuery();
+  const { data: goals, isLoading = true } = useGetGoalsQuery();
   const [blankGoals, setBlankGoals] = useState<number[]>([]);
 
   return isLoading ? (

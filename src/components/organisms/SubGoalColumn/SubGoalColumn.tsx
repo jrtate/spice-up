@@ -112,7 +112,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
           <TextField
             autoFocus
             sx={{ marginRight: 1 }}
-            variant={"standard"}
+            variant={"outlined"}
             label="Sub-goal"
             value={description}
             onChange={(e) => {
