@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Divider,
+  Fab,
   IconButton,
   LinearProgress,
   TextField,
@@ -117,9 +118,13 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
       >
         {isGoalCreated ? (
           <Tooltip title={"Toggle Show/Hide"}>
-            <IconButton onClick={() => setShouldCollapse(!shouldCollapse)}>
+            <Fab
+              size={"small"}
+              color={"primary"}
+              onClick={() => setShouldCollapse(!shouldCollapse)}
+            >
               {shouldCollapse ? <AddIcon /> : <RemoveIcon />}
-            </IconButton>
+            </Fab>
           </Tooltip>
         ) : (
           <Box />
