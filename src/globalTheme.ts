@@ -14,10 +14,10 @@ const globalTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#2895cb",
+      main: "#02f8f0",
     },
     secondary: {
-      main: "#D9652E",
+      main: "#f04902",
     },
   },
 });

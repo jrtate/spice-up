@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
-import { eachDayOfInterval, format } from "date-fns";
+import { eachDayOfInterval, format, addWeeks } from "date-fns";
 import CalendarHeader from "../../atoms/CalendarHeader/CalendarHeader";
 import TaskCard from "../TaskCard/TaskCard";
 import { ReactSortable } from "react-sortablejs";
@@ -13,20 +13,25 @@ import { Typography } from "@mui/material";
 interface CalendarColumnProps {
   header: string;
   taskList: Task[];
+  selectedWeek: number;
 }
 
-const CalendarColumn = ({ header, taskList }: CalendarColumnProps) => {
+const CalendarColumn = ({
+  header,
+  taskList,
+  selectedWeek,
+}: CalendarColumnProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const queryClient = useQueryClient();
   const updateTaskOrder = useUpdateTaskSortOrderMutation(queryClient);
   const daysOfWeek = useMemo(() => {
-    const prevMonday = new Date();
+    const prevMonday = addWeeks(new Date(), selectedWeek);
     prevMonday.setDate(prevMonday.getDate() - ((prevMonday.getDay() + 6) % 7));
     return eachDayOfInterval({
       start: prevMonday,
-      end: new Date().setDate(prevMonday.getDate() + 6),
+      end: addWeeks(new Date(), selectedWeek).setDate(prevMonday.getDate() + 6),
     });
-  }, []);
+  }, [selectedWeek]);
 
   const getDate = () => {
     return daysOfWeek.find(
