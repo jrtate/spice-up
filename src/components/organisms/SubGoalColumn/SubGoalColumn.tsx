@@ -61,7 +61,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
     }
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     // todo: consider moving this to BE when a task is completed
     if (subGoal?.tasks?.some((task) => !task?.isCompleted)) {
       if (!subGoal?.isCompleted) return;
@@ -69,7 +69,7 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
     } else {
       completeSubGoal.mutate(subGoal?.id);
     }
-  }, [subGoal?.tasks]);
+  }, [subGoal?.tasks]);*/
 
   return (
     <Box
