@@ -77,7 +77,7 @@ const CalendarColumn = ({
           borderRadius: "2px",
           padding: 1,
           border: `1px solid ${
-            format(new Date(), "eeee") === header
+            format(new Date(), "eeee") === header && selectedWeek === 0
               ? "#f5f5f5"
               : "rgba(255, 255, 255, 0.12)"
           }`,
