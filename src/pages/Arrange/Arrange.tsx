@@ -5,7 +5,7 @@ import { DaysOfWeek, Task } from "models/Task";
 import { useGetTasksQuery } from "api/TasksApi";
 import PageLoader from "../../components/atoms/PageLoader/PageLoader";
 import { useGetTaskOrdersQuery } from "api/OrderApi";
-import { Box, Button, Fab, IconButton } from "@mui/material";
+import { Box, Fab } from "@mui/material";
 import { format } from "date-fns";
 import { NavigateBefore, NavigateNext } from "@mui/icons-material";
 

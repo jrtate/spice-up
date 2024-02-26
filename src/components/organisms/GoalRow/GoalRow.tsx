@@ -82,7 +82,6 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
       }}
     >
       <ConfirmationModal
@@ -116,26 +115,11 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
           justifyContent: "space-between",
         }}
       >
-        {isGoalCreated ? (
-          <Tooltip title={"Toggle Show/Hide"}>
-            <Fab
-              size={"small"}
-              color={"primary"}
-              onClick={() => setShouldCollapse(!shouldCollapse)}
-            >
-              {shouldCollapse ? <AddIcon /> : <RemoveIcon />}
-            </Fab>
-          </Tooltip>
-        ) : (
-          <Box />
-        )}
-
         <Box sx={{ display: "flex", alignItems: "center" }}>
           {!isEditing && isGoalCreated && (
             <Typography
               color={"#f5f5f5"}
               sx={{
-                marginX: 1,
                 textDecoration: goal?.isCompleted ? "line-through" : "none",
               }}
               variant="h5"
@@ -204,7 +188,17 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
           )}
         </Box>
 
-        <Box />
+        {isGoalCreated && (
+          <Tooltip title={"Toggle Show/Hide"}>
+            <Fab
+              size={"small"}
+              color={"primary"}
+              onClick={() => setShouldCollapse(!shouldCollapse)}
+            >
+              {shouldCollapse ? <AddIcon /> : <RemoveIcon />}
+            </Fab>
+          </Tooltip>
+        )}
       </Box>
 
       {isGoalCreated && goal?.subGoals?.length > 0 && (
@@ -289,7 +283,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
         </Box>
       )}
       <Divider
-        sx={{ height: 1, width: "100%", marginTop: 12 }}
+        sx={{ height: 1, width: "100%", marginTop: shouldCollapse ? 6 : 12 }}
         variant="middle"
       />
     </Box>
