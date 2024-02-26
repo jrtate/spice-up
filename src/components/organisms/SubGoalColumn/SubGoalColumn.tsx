@@ -61,6 +61,16 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
     }
   };
 
+  useEffect(() => {
+    // todo: consider moving this to BE when a task is completed
+    if (subGoal?.tasks?.some((task) => !task?.isCompleted)) {
+      if (!subGoal?.isCompleted) return;
+      unCompleteSubGoal.mutate(subGoal?.id);
+    } else {
+      completeSubGoal.mutate(subGoal?.id);
+    }
+  }, [subGoal?.tasks]);
+
   return (
     <Box
       sx={{
@@ -129,22 +139,24 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
           </Tooltip>
         ) : (
           <Tooltip title="Save Sub-goal">
-            <IconButton
-              disabled={!description}
-              onClick={() => {
-                if (isSubGoalCreated) {
-                  editSubGoal.mutate({ id: subGoal?.id, description });
-                  handleSetShowToast("Sub-goal saved.");
-                } else {
-                  saveSubGoal.mutate({ goalId, description });
-                  handleSetShowToast("Sub-goal created.");
-                }
-                setDescription("");
-                setIsEditing(false);
-              }}
-            >
-              <SaveIcon />
-            </IconButton>
+            <span>
+              <IconButton
+                disabled={!description}
+                onClick={() => {
+                  if (isSubGoalCreated) {
+                    editSubGoal.mutate({ id: subGoal?.id, description });
+                    handleSetShowToast("Sub-goal saved.");
+                  } else {
+                    saveSubGoal.mutate({ goalId, description });
+                    handleSetShowToast("Sub-goal created.");
+                  }
+                  setDescription("");
+                  setIsEditing(false);
+                }}
+              >
+                <SaveIcon />
+              </IconButton>
+            </span>
           </Tooltip>
         )}
         {isSubGoalCreated && !isEditing && (
