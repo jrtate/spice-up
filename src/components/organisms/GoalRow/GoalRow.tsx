@@ -218,7 +218,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
         >
           <Box sx={{ width: "100%", mr: 1 }}>
             <LinearProgress
-              sx={{ height: "10px", borderRadius: "4px" }}
+              sx={{ height: "1rem", borderRadius: "1rem" }}
               variant="determinate"
               value={currentGoalProgress}
             />

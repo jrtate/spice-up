@@ -10,4 +10,5 @@ export const LoginContainer = styled(Box)`
   width: 25rem;
   background-color: rgb(20 20 20);
   border: 1px solid #ffffff;
+  border-radius: 1rem;
 `;
