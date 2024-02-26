@@ -77,7 +77,15 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             {task.isRecurring ? "Re-occurring" : "One-time"} Task
           </Typography>
-          <Typography variant="h6" component="div">
+          <Typography
+            variant="h6"
+            component="div"
+            sx={
+              !showCompletionStats && task.isCompleted
+                ? { textDecoration: "line-through" }
+                : {}
+            }
+          >
             {task?.description?.toUpperCase()}
           </Typography>
           {!!duration && (
@@ -91,7 +99,8 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
               {duration}
             </Typography>
           )}
-          {!task?.isRecurring && task?.scheduledDay && (
+
+          {!task?.isRecurring && task?.scheduledDay && !task.isCompleted && (
             <Typography
               mt={1}
               mb={1}
@@ -103,6 +112,17 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
               {formatRelative(new Date(task.scheduledDay), new Date(), {
                 locale,
               })}
+            </Typography>
+          )}
+          {!showCompletionStats && task?.isCompleted && (
+            <Typography
+              mt={1}
+              mb={1}
+              variant={"body2"}
+              color="text.secondary"
+              sx={{ fontStyle: "italic" }}
+            >
+              Completed
             </Typography>
           )}
           {showCompletionStats && task?.isRecurring && (
