@@ -40,4 +40,5 @@ export interface TaskBlock {
   totalBlocks: number;
   completedBlocks: number;
   dayOfWeek: DaysOfWeek[];
+  yearWeekId?: string;
 }
