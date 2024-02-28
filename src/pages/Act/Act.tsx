@@ -126,7 +126,9 @@ const Act = () => {
                       taskBlock={taskBlockData?.find(
                         (block) =>
                           block.taskId === task.id &&
-                          block.dayOfWeek === DaysOfWeek[currentDay],
+                          block.dayOfWeek === DaysOfWeek[currentDay] &&
+                          block.yearWeekId ===
+                            `${getYear(new Date())}-${getWeek(new Date())}`,
                       )}
                     />
                     {!!task.duration && (
@@ -135,7 +137,9 @@ const Act = () => {
                         taskBlock={taskBlockData?.find(
                           (block) =>
                             block.taskId === task.id &&
-                            block.dayOfWeek === DaysOfWeek[currentDay],
+                            block.dayOfWeek === DaysOfWeek[currentDay] &&
+                            block.yearWeekId ===
+                              `${getYear(new Date())}-${getWeek(new Date())}`,
                         )}
                         durationInMinutes={task.duration}
                       />

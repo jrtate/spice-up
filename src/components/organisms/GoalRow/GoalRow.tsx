@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Divider,
+  Fab,
   IconButton,
   LinearProgress,
   TextField,
@@ -26,6 +27,8 @@ import {
 } from "../../../api/GoalCompletionApi";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import { useToast } from "../../../hooks/useToast";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 interface GoalRowProps {
   goal?: Goal;
@@ -52,6 +55,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
   const [description, setDescription] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [shouldCollapse, setShouldCollapse] = useState<boolean>(false);
   const { handleSetShowToast } = useToast();
 
   useEffect(() => {
@@ -78,7 +82,6 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
       }}
     >
       <ConfirmationModal
@@ -107,79 +110,93 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
       <Box
         sx={{
           display: "flex",
-          alignItems: "center",
-          marginBottom: 2,
+          marginBottom: 4,
+          width: "100%",
+          justifyContent: "space-between",
         }}
       >
-        {!isEditing && isGoalCreated && (
-          <Typography
-            color={"#f5f5f5"}
-            sx={{
-              marginRight: 1,
-              textDecoration: goal?.isCompleted ? "line-through" : "none",
-            }}
-            variant="h5"
-          >
-            {description}
-          </Typography>
-        )}
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          {!isEditing && isGoalCreated && (
+            <Typography
+              color={"#f5f5f5"}
+              sx={{
+                textDecoration: goal?.isCompleted ? "line-through" : "none",
+              }}
+              variant="h5"
+            >
+              {description}
+            </Typography>
+          )}
+          {(isEditing || !isGoalCreated) && (
+            <TextField
+              autoFocus
+              sx={{ marginRight: 1 }}
+              variant={"outlined"}
+              label="Goal"
+              value={description}
+              onChange={(e) => {
+                setDescription(e.target.value);
+              }}
+              inputProps={{ maxLength: 50 }}
+            />
+          )}
 
-        {(isEditing || !isGoalCreated) && (
-          <TextField
-            autoFocus
-            sx={{ marginRight: 1 }}
-            variant={"standard"}
-            label="Goal"
-            value={description}
-            onChange={(e) => {
-              setDescription(e.target.value);
-            }}
-            inputProps={{ maxLength: 50 }}
-          />
-        )}
-        {isGoalCreated && !isEditing ? (
-          <Tooltip title="Edit Goal">
-            <IconButton onClick={() => setIsEditing(true)}>
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Save Goal">
-            <IconButton
-              disabled={!description}
-              onClick={() => {
-                if (isGoalCreated) {
-                  editGoal.mutate({ id: goal?.id, description });
-                  handleSetShowToast("Goal saved.");
-                } else {
-                  saveGoal.mutate({ description });
-                  onSaveGoal?.();
-                  handleSetShowToast("Goal created.");
-                }
-                setIsEditing(false);
-              }}
+          {isGoalCreated && !isEditing ? (
+            <Tooltip title="Edit Goal">
+              <IconButton onClick={() => setIsEditing(true)}>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Save Goal">
+              <IconButton
+                disabled={!description}
+                onClick={() => {
+                  if (isGoalCreated) {
+                    editGoal.mutate({ id: goal?.id, description });
+                    handleSetShowToast("Goal saved.");
+                  } else {
+                    saveGoal.mutate({ description });
+                    onSaveGoal?.();
+                    handleSetShowToast("Goal created.");
+                  }
+                  setIsEditing(false);
+                }}
+              >
+                <SaveIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+          {!isEditing && isGoalCreated && (
+            <Tooltip title="Delete Goal">
+              <IconButton onClick={() => setShowDeleteModal(true)}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+          {isEditing && (
+            <Tooltip title={"Cancel"}>
+              <IconButton
+                onClick={() => {
+                  setDescription(goal?.description);
+                  setIsEditing(false);
+                }}
+              >
+                <ClearIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Box>
+
+        {isGoalCreated && (
+          <Tooltip title={"Toggle Show/Hide"}>
+            <Fab
+              size={"small"}
+              color={"primary"}
+              onClick={() => setShouldCollapse(!shouldCollapse)}
             >
-              <SaveIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-        {!isEditing && isGoalCreated && (
-          <Tooltip title="Delete Goal">
-            <IconButton onClick={() => setShowDeleteModal(true)}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-        {isEditing && (
-          <Tooltip title={"Cancel"}>
-            <IconButton
-              onClick={() => {
-                setDescription(goal?.description);
-                setIsEditing(false);
-              }}
-            >
-              <ClearIcon />
-            </IconButton>
+              {shouldCollapse ? <AddIcon /> : <RemoveIcon />}
+            </Fab>
           </Tooltip>
         )}
       </Box>
@@ -201,7 +218,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
         >
           <Box sx={{ width: "100%", mr: 1 }}>
             <LinearProgress
-              sx={{ height: "10px", borderRadius: "4px" }}
+              sx={{ height: "1rem", borderRadius: "1rem" }}
               variant="determinate"
               value={currentGoalProgress}
             />
@@ -215,10 +232,15 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
         </Box>
       )}
 
-      {isGoalCreated && (
+      {isGoalCreated && !shouldCollapse && (
         <Box
           mt={8}
-          sx={{ display: "flex", justifyContent: "flex-start", width: "100%" }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-start",
+            width: "100%",
+          }}
         >
           {!goal?.subGoals?.length && (
             <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -242,7 +264,11 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
             {goal?.subGoals?.map((subGoal) => (
               <Box
                 key={subGoal?.id}
-                sx={{ display: "flex", justifyContent: "flex-start", gap: 4 }}
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  gap: 4,
+                }}
               >
                 <SubGoalColumn goalId={goal.id} subGoal={subGoal} />
                 <Divider
@@ -257,7 +283,7 @@ const GoalRow = ({ goal, onSaveGoal }: GoalRowProps) => {
         </Box>
       )}
       <Divider
-        sx={{ height: 1, width: "100%", marginTop: 12 }}
+        sx={{ height: 1, width: "100%", marginTop: shouldCollapse ? 6 : 12 }}
         variant="middle"
       />
     </Box>

@@ -91,7 +91,8 @@ const TaskCard = ({ task, showCompletionStats }: TaskDisplayCardProps) => {
               {duration}
             </Typography>
           )}
-          {!task?.isRecurring && task?.scheduledDay && (
+
+          {!task?.isRecurring && task?.scheduledDay && !task.isCompleted && (
             <Typography
               mt={1}
               mb={1}

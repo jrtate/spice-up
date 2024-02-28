@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Box, Fab, Tooltip } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import PageLoader from "../../components/atoms/PageLoader/PageLoader";
 import GoalRow from "../../components/organisms/GoalRow/GoalRow";
 import AddIcon from "@mui/icons-material/Add";
 import { useGetGoalsQuery } from "../../api/GoalsApi";
 
 const Plan = () => {
-  const { data: goals, isLoading } = useGetGoalsQuery();
+  const { data: goals, isLoading = true } = useGetGoalsQuery();
   const [blankGoals, setBlankGoals] = useState<number[]>([]);
 
   return isLoading ? (
@@ -27,15 +27,14 @@ const Plan = () => {
         marginTop={2}
         sx={{ display: "flex", justifyContent: "center", width: "100%" }}
       >
-        <Tooltip title="Add New Goal" placement="top">
-          <Fab
-            disabled={blankGoals.length === 1}
-            color="primary"
-            onClick={() => setBlankGoals([1])}
-          >
-            <AddIcon />
-          </Fab>
-        </Tooltip>
+        <Button
+          variant={"outlined"}
+          disabled={blankGoals.length === 1}
+          color="primary"
+          onClick={() => setBlankGoals([1])}
+        >
+          Add New Goal <AddIcon />
+        </Button>
       </Box>
     </Box>
   );

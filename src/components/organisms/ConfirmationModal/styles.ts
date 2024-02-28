@@ -9,4 +9,5 @@ export const ModalContainer = styled(Box)`
   width: 450px;
   background-color: rgb(20 20 20);
   border: 1px solid #ffffff;
+  border-radius: 1.5rem;
 `;

@@ -21,7 +21,7 @@ const PomodoroTracker = ({
   durationInMinutes,
 }: PomodoroTrackerProps) => {
   const {
-    data: { workBlockDuration, breakBlockDuration },
+    data: { workBlockDuration = 0, breakBlockDuration },
   } = useGetSettingsQuery();
 
   const queryClient = useQueryClient();
