@@ -196,13 +196,19 @@ const SubGoalColumn = ({ goalId, subGoal }: GoalColumnProps) => {
         )}
       </Box>
 
-      {subGoal?.tasks?.map((task) => (
-        <Box key={task.id} marginBottom={2} width={"100%"}>
-          <TaskCard task={task} showCompletionStats={true} />
-        </Box>
-      ))}
+      {!subGoal?.isCompleted ? (
+        subGoal?.tasks?.map((task) => (
+          <Box key={task.id} marginBottom={2} width={"100%"}>
+            <TaskCard task={task} showCompletionStats={true} />
+          </Box>
+        ))
+      ) : (
+        <Typography sx={{ marginTop: "1rem" }} variant={"h6"}>
+          Sub-goal completed!
+        </Typography>
+      )}
 
-      {isSubGoalCreated && (
+      {isSubGoalCreated && !subGoal?.isCompleted && (
         <Button
           sx={{ marginTop: "1rem" }}
           variant="outlined"
